@@ -31,16 +31,18 @@ public class InternersTest {
         try {
             es.invokeAll(set);
         } catch (InterruptedException e1) {
+            e1.printStackTrace();
         }
 
         System.out.println("cost : " + (System.currentTimeMillis() - time) / 1000 + "ms");
     }
 
-    public static void deal(String bizId) {
+    private static void deal(String bizId) {
         synchronized (pool.intern(bizId)) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
+                e.printStackTrace();
             }
             System.out.println("完成任务，释放锁");
         }
