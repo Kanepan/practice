@@ -1,5 +1,5 @@
 /*
-    自旋锁中，如果不存在线程切换， 则速度飞快. 整体来说还是 ，重入锁优秀
+    自旋锁中，如果不存在线程切换， 则速度飞快. 整体来说还是 ，重入锁优秀，公平和非公平，有几倍的性能差距
  */
 
 package com.kane.practice.concurrent;
@@ -46,11 +46,11 @@ public class SpinLock {
     public static void main(String[] args) {
         List<Callable<Object>> tasks = new ArrayList();
         long time = System.currentTimeMillis();
-        for (int i = 0; i < 5000; i++) {
+        for (int i = 0; i < 50000; i++) {
             tasks.add(new Callable() {
                 @Override
                 public Object call() throws Exception {
-                    test1();
+                    test2();
                     return null;
                 }
             });

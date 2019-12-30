@@ -15,7 +15,7 @@ public class TpsTest {
     private static ExecutorService es = Executors.newFixedThreadPool(30);
 
     public static void deal(){
-        int sendCount = 500;
+        int sendCount = 1000;
         Set<Callable<SupplyResult<String>>> set = new HashSet<>();
         //1000114400018278739
         final long card = 1000114400010217839l;
@@ -25,7 +25,7 @@ public class TpsTest {
                 @Override
                 public SupplyResult<String> call() throws Exception {
                     long temp = card + count;
-                    SupplyResult<String> result =  HttpClientUtil.get("http://182.92.157.25:8888/gascard/query/" + temp + "/1");
+                    SupplyResult<String> result =  HttpClientUtil.get("http://app.leyaozhineng.com/api/getVersion.action" );
 //                    SupplyResult<String> result =  HttpClientUtil.get("http://127.0.0.1:8888/gascard/query/" + temp + "/1");
                      System.out.println(result.getModule());
                    return result;
