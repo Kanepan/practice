@@ -71,6 +71,40 @@
             <artifactId>spring-beans</artifactId>
             <version>4.3.19.RELEASE</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-core -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>4.6.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wltea.ik-analyzer</groupId>
+            <artifactId>ik-analyzer</artifactId>
+            <version>3.2.8</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.dyuproject.protostuff</groupId>-->
+<!--            <artifactId>protostuff-core</artifactId>-->
+<!--            <version>1.0.8</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.dyuproject.protostuff</groupId>-->
+<!--            <artifactId>protostuff-runtime</artifactId>-->
+<!--            <version>1.0.8</version>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>io.protostuff</groupId>
+            <artifactId>protostuff-core</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.protostuff</groupId>
+            <artifactId>protostuff-runtime</artifactId>
+            <version>1.6.0</version>
+        </dependency>
     </dependencies>
 
     <build>
