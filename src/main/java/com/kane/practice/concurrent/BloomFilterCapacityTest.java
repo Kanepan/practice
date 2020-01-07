@@ -11,13 +11,15 @@ public class BloomFilterCapacityTest {
 
     private static Set<String> set = new HashSet<>();
 
-    private static BloomFilter<String> bloomFilter = BloomFilter.create(Funnels.stringFunnel(Charset.defaultCharset()), size, 0.00001);
+    private static BloomFilter<String> bloomFilter = BloomFilter.create(Funnels.stringFunnel(Charset.defaultCharset()), size, 0.001);
+
+
 
     public static void main(String[] args) throws InterruptedException {
         long time = System.currentTimeMillis();
         bloomFilter();
 
-        //hashMap();
+//        hashMap();
         System.out.println("操作完成" + (System.currentTimeMillis() - time)/1000 + "s");
         Thread.sleep(10000000L);
 
