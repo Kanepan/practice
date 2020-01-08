@@ -30,9 +30,10 @@ public class BloomFilterTest {
         }
         List<Integer> list = new ArrayList<Integer>(1000);
         // 故意取10000个不在过滤器里的值，看看有多少个会被认为在过滤器里
-
         long time = System.nanoTime();
-        for (int i = size + 1000000; i < size + 2000000; i++) {
+
+        int testCount = 1000000;
+        for (int i = 0; i < testCount; i++) {
 //            if (bloomFilter.mightContain(i)) {
 
             if (bloomFilter.mightContain(UUID.randomUUID().toString())) {
@@ -42,8 +43,9 @@ public class BloomFilterTest {
             }
         }
         System.out.println("检测时间;" + (System.nanoTime() - time) / 1000000 + "ms");
+        System.out.println("检测数量：" + testCount);
         System.out.println("误判的数量：" + list.size());
-        System.out.println("误判的率：" + Double.valueOf(list.size()) / 10000);
+        System.out.println("误判的率：" + Double.valueOf(list.size()) / (testCount / 100));
     }
 
     private static void hashMap() {
