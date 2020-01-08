@@ -53,7 +53,7 @@ public class ProtostuffTest {
         subBean.setTest("im sub");
         List<SubBean> list = new ArrayList();
         list.add(subBean);
-//        bean2.setList(list);
+        //bean2.setList(list);
         bean2.setNewF("hahah");
 
         source.setModule(bean2);
@@ -116,9 +116,10 @@ public class ProtostuffTest {
 
     static class MyBean2  implements Serializable {
         private static final long serialVersionUID = 2L;
-       // private List<SubBean> list;
+
         private String newF ;
         private String name;
+        // private List<SubBean> list;
         private Integer flag;
 
         public String getNewF() {
@@ -129,16 +130,25 @@ public class ProtostuffTest {
             this.newF = newF;
         }
 
+//        public List<SubBean> getList() {
+//            return list;
+//        }
+//
+//        public void setList(List<SubBean> list) {
+//            this.list = list;
+//        }
+
         @Override
         public String toString() {
             return "MyBean2{" +
                     "newF='" + newF + '\'' +
                     ", name='" + name + '\'' +
+//                    ", list=" + list +
                     ", flag=" + flag +
                     '}';
         }
 
-//                @Override
+        //                @Override
 //        public String toString() {
 //            return "MyBean2{" +
 //                    "name='" + name + '\'' +
