@@ -30,7 +30,6 @@ public class BloomFilterCapacityTest {
     }
 
     private static void bloomFilter(){
-
         for (int i = 0; i < size; i++) {
             bloomFilter.put(UUID.randomUUID().toString());
         }

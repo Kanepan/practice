@@ -20,55 +20,54 @@ public class SupplierTest {
         String key = "1";
         String value = null;
         value = SupplierTest.selectCacheTemplate(
-                ()->cache.get(key),
-                ()->db.get(key),
-                ()->cache.save(key, db.get(key))
+                () -> cache.get(key),
+                () -> db.get(key),
+                () -> cache.save(key, db.get(key))
         );
 
         System.out.println(value);
         System.out.println(cache.get("1"));
-        cache.save("1","new value");
+        cache.save("1", "new value");
 
 //        Function<String,String> getFromDb = e ->{return db.get(key);};
-         value = SupplierTest.selectCacheTemplate(
-                ()->cache.get(key),
-                ()->db.get(key),
-                ()->cache.save(key,db.get(key))
+        value = SupplierTest.selectCacheTemplate(
+                () -> cache.get(key),
+                () -> db.get(key),
+                () -> cache.save(key, db.get(key))
         );
-         //这里实际会调用两次，不推荐这么写。
+        //这里实际会调用两次，不推荐这么写。
 
         System.out.println(value);
+
     }
 
 
-
-
-    public static <T> T selectCacheTemplate(CacheSelector<T> cacheSelector, Supplier<T> databaseSelector,CacheSaver cacheSaver) {
-       T t = cacheSelector.get();
-       if(t == null){
-           t = databaseSelector.get();
-           if(t!=null){
-               cacheSaver.save();
-           }
-       }
-       return t;
+    public static <T> T selectCacheTemplate(CacheSelector<T> cacheSelector, Supplier<T> databaseSelector, CacheSaver cacheSaver) {
+        T t = cacheSelector.get();
+        if (t == null) {
+            t = databaseSelector.get();
+            if (t != null) {
+                cacheSaver.save();
+            }
+        }
+        return t;
     }
 
-    static class Db{
+    static class Db {
         public String get(String key) {
             return System.currentTimeMillis() + "";
         }
     }
 
-    static class Cache{
-        Map<String,String> map = new HashMap<>();
+    static class Cache {
+        Map<String, String> map = new HashMap<>();
 
         public String get(String key) {
             return map.get(key);
         }
 
-        public void save(String key,String value) {
-            map.put(key,value);
+        public void save(String key, String value) {
+            map.put(key, value);
         }
     }
 }

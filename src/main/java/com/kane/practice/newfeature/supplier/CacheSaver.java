@@ -8,6 +8,6 @@
 
 package com.kane.practice.newfeature.supplier;
 @FunctionalInterface
-public interface CacheSaver {
+public interface CacheSaver{
     void save();
 }
