@@ -2,7 +2,6 @@ package com.kane.practice.efficiency;
 
 import com.kane.practice.utils.http.HttpClientUtil;
 import com.kane.practice.utils.http.SupplyResult;
-import com.sun.deploy.net.HttpUtils;
 
 import java.util.*;
 import java.util.concurrent.Callable;

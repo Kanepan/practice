@@ -31,7 +31,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>19.0</version>
+            <version>28.2-jre</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -79,11 +79,11 @@
             <version>4.6.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.wltea.ik-analyzer</groupId>
-            <artifactId>ik-analyzer</artifactId>
-            <version>3.2.8</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.wltea.ik-analyzer</groupId>-->
+<!--            <artifactId>ik-analyzer</artifactId>-->
+<!--            <version>3.2.8</version>-->
+<!--        </dependency>-->
 <!--        <dependency>-->
 <!--            <groupId>com.dyuproject.protostuff</groupId>-->
 <!--            <artifactId>protostuff-core</artifactId>-->
@@ -104,6 +104,16 @@
             <groupId>io.protostuff</groupId>
             <artifactId>protostuff-runtime</artifactId>
             <version>1.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.11.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hashids</groupId>
+            <artifactId>hashids</artifactId>
+            <version>1.0.3</version>
         </dependency>
     </dependencies>
 

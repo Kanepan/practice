@@ -6,7 +6,7 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.kane.practice.newfeature.supplier;
+package com.kane.practice.newfeature.supplier.newcacheselector;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +19,7 @@ public class SupplierTest {
         Db db = new Db();
         String key = "1";
         String value = null;
+
         value = SupplierTest.selectCacheTemplate(
                 () -> cache.get(key),
                 () -> db.get(key),
@@ -30,14 +31,14 @@ public class SupplierTest {
         cache.save("1", "new value");
 
 //        Function<String,String> getFromDb = e ->{return db.get(key);};
-        value = SupplierTest.selectCacheTemplate(
-                () -> cache.get(key),
-                () -> db.get(key),
-                () -> cache.save(key, db.get(key))
-        );
-        //这里实际会调用两次，不推荐这么写。
-
-        System.out.println(value);
+//        value = SupplierTest.selectCacheTemplate(
+//                () -> cache.get(key),
+//                () -> db.get(key),
+//                () -> cache.save(key, db.get(key))
+//        );
+//        //这里实际会调用两次，不推荐这么写。
+//
+//        System.out.println(value);
 
     }
 

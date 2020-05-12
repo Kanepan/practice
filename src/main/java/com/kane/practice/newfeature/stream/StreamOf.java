@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 public class StreamOf {
     public static void main(String[] args) {
-        test4();
+        test1();
     }
 
 
