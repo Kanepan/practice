@@ -3,19 +3,21 @@ package com.kane.practice.concurrent.snowflake;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
 import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
-public class ShortUidGenerator implements UidGenerator, InitializingBean {
+public class ShortBizUidGenerator implements BizUidGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultUidGenerator.class);
 
     /**
      * Bits allocate
      */
     protected int timeBits = 30;  //28 支持 8年 29支持16年左右  30 32年左右 支持 32 支持 100年左右
-    protected static int workerBits = 5;   // 5位，支持31个workid
+    protected int workerBits = 5;   // 5位，支持31个workid
     protected int seqBits = 13; // 13 支持1秒生成8000左右(1024*8-1)  10支持1秒1023个 (1024 -1)
 
     /**
@@ -30,19 +32,16 @@ public class ShortUidGenerator implements UidGenerator, InitializingBean {
     protected BitsAllocator bitsAllocator;
     protected long workerId;
 
-    /**
-     * Volatile fields caused by nextId()
-     */
-    protected long sequence = 0L;
-    protected long lastSecond = -1L;
+    protected volatile long lastSecond = -1L;
+    protected static final ConcurrentMap<String, AtomicLong> SEQUENCE_MAP = new ConcurrentHashMap<>();
+
 
     /**
      * Spring property
      */
     protected WorkerIdAssigner workerIdAssigner;
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
+    public void init() throws Exception {
         // initialize bits allocator
         bitsAllocator = new BitsAllocator(timeBits, workerBits, seqBits);
 
@@ -58,14 +57,10 @@ public class ShortUidGenerator implements UidGenerator, InitializingBean {
         LOGGER.info("Initialized bits(1, {}, {}, {}) for workerID:{}", timeBits, workerBits, seqBits, workerId);
     }
 
-    public static Integer getWorkerBits(){
-        return workerBits;
-    }
-
     @Override
-    public long getUID() throws UidGenerateException {
+    public long getUID(String bizType) throws UidGenerateException {
         try {
-            return nextId();
+            return nextId(bizType);
         } catch (Exception e) {
             LOGGER.error("Generate unique id exception. ", e);
             throw new UidGenerateException(e);
@@ -102,7 +97,7 @@ public class ShortUidGenerator implements UidGenerator, InitializingBean {
      * @return UID
      * @throws UidGenerateException in the case: Clock moved backwards; Exceeds the max timestamp
      */
-    protected synchronized long nextId() {
+    protected long nextId(String bizType) {
         long currentSecond = getCurrentSecond();
 
         // Clock moved backwards, refuse to generate uid
@@ -112,22 +107,37 @@ public class ShortUidGenerator implements UidGenerator, InitializingBean {
         }
 
         // At the same second, increase sequence
-        if (currentSecond == lastSecond) {
-            sequence = (sequence + 1) & bitsAllocator.getMaxSequence();
-            // Exceed the max sequence, we wait the next second to generate uid
-            if (sequence == 0) {
-                currentSecond = getNextSecond(lastSecond);
+        AtomicLong sequence = null;
+        sequence = SEQUENCE_MAP.get(bizType);
+        if (sequence == null) {
+            sequence = new AtomicLong();
+            AtomicLong tempLong = SEQUENCE_MAP.putIfAbsent(bizType, sequence);
+            if (tempLong != null) {
+                sequence = tempLong;
+            }
+        }
+        synchronized (sequence) {
+            if (currentSecond == lastSecond) {
+                sequence.set(sequence.incrementAndGet() & bitsAllocator.getMaxSequence());
+                // Exceed the max sequence, we wait the next second to generate uid
+                if (sequence.get() == 0) {
+                    currentSecond = getNextSecond(lastSecond);
+                }
+                // At the different second, sequence restart from zero
+            } else {
+                // reset
+                sequence.set(0);
             }
 
-            // At the different second, sequence restart from zero
-        } else {
-            sequence = 0L;
+            setLastSecond(currentSecond);
+            // Allocate bits for UID
+            return bitsAllocator.allocate(currentSecond - epochSeconds, workerId, sequence.get());
         }
 
-        lastSecond = currentSecond;
+    }
 
-        // Allocate bits for UID
-        return bitsAllocator.allocate(currentSecond - epochSeconds, workerId, sequence);
+    public  void setLastSecond(long currentSecond){
+        this.lastSecond = currentSecond;
     }
 
     /**

@@ -84,16 +84,6 @@
 <!--            <artifactId>ik-analyzer</artifactId>-->
 <!--            <version>3.2.8</version>-->
 <!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.dyuproject.protostuff</groupId>-->
-<!--            <artifactId>protostuff-core</artifactId>-->
-<!--            <version>1.0.8</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.dyuproject.protostuff</groupId>-->
-<!--            <artifactId>protostuff-runtime</artifactId>-->
-<!--            <version>1.0.8</version>-->
-<!--        </dependency>-->
 
         <dependency>
             <groupId>io.protostuff</groupId>
@@ -114,6 +104,12 @@
             <groupId>org.hashids</groupId>
             <artifactId>hashids</artifactId>
             <version>1.0.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.spy</groupId>
+            <artifactId>spymemcached</artifactId>
+            <version>2.12.3</version>
         </dependency>
     </dependencies>
 

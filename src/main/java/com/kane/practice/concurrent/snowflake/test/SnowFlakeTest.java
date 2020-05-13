@@ -1,11 +1,13 @@
-package com.kane.practice.concurrent.snowflake;
+package com.kane.practice.concurrent.snowflake.test;
+
+import com.kane.practice.concurrent.snowflake.ShortUidGenerator;
 
 public class SnowFlakeTest {
 //    private static final DefaultUidGenerator uidGenerator = new DefaultUidGenerator();
 
     private static final ShortUidGenerator uidGenerator = new ShortUidGenerator();
 
-    static{
+    static {
         try {
             uidGenerator.afterPropertiesSet();
         } catch (Exception e) {
@@ -25,7 +27,7 @@ public class SnowFlakeTest {
         System.out.println(uidGenerator.parseUID(id));
 
 
-        System.out.println(Integer.toBinaryString(1024*8));
+        System.out.println(Integer.toBinaryString(1024 * 8));
         System.out.println(Integer.toBinaryString(31));
     }
 }

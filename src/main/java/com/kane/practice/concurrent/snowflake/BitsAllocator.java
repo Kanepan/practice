@@ -121,6 +121,10 @@ public class BitsAllocator {
         return maxSequence;
     }
 
+    public long getMaxSequence(String bizType) {
+        return maxSequence;
+    }
+
     public int getTimestampShift() {
         return timestampShift;
     }

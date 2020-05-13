@@ -1,14 +1,13 @@
 package com.kane.practice.concurrent.snowflake;
 
-public interface UidGenerator {
-
+public interface BizUidGenerator {
     /**
      * Get a unique ID
      *
      * @return UID
      * @throws UidGenerateException
      */
-    long getUID() throws UidGenerateException;
+    long getUID(String bizType) throws UidGenerateException;
 
 
     /**
