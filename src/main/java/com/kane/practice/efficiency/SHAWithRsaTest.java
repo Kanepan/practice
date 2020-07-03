@@ -4,6 +4,7 @@ import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.Sign;
 import cn.hutool.crypto.asymmetric.SignAlgorithm;
 import com.kane.practice.utils.security.SHAWithRSAUtils2;
+import com.kane.practice.utils.security.SHAWithRSAUtils3;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.text.RandomStringGenerator;
 
@@ -20,7 +21,7 @@ public class SHAWithRsaTest {
     private static volatile boolean isStart = false;
 
     public static void deal() {
-        Long sendCount = 1000000L;
+        Long sendCount = 50000L;
         CountDownLatch cd = new CountDownLatch(sendCount.intValue());
 
         new Thread(new Runnable() {
@@ -40,7 +41,7 @@ public class SHAWithRsaTest {
         }).start();
 
         try {
-            System.out.println("等待线程池满了");
+            System.out.println("等待线程池满");
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -82,7 +83,7 @@ public class SHAWithRsaTest {
     private static RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder().withinRange('0', 'Z').build();
 
 
-    public static void test() {
+    public static void test1() {
         if (!isStart) {
             try {
                 order.await();
@@ -115,6 +116,14 @@ public class SHAWithRsaTest {
     }
 
     public static void test2() {
+        if (!isStart) {
+            try {
+                order.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         String input = randomStringGenerator.generate(100);
         String siged = SHAWithRSAUtils2.sign(input);
 //        System.out.println(siged);
@@ -128,6 +137,28 @@ public class SHAWithRsaTest {
     }
 
     public static void test3() {
+        if (!isStart) {
+            try {
+                order.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        String input = randomStringGenerator.generate(100);
+        String siged = SHAWithRSAUtils3.sign(input);
+//        System.out.println(siged);
+//        System.out.println(SHAWithRSAUtils2.verify(input, siged));
+        boolean verify = SHAWithRSAUtils3.verify(input, siged);
+//        System.out.println(verify);
+        if (!verify) {
+            System.err.println(verify);
+            System.exit(0);
+        }
+    }
+
+
+    public static void testMd5() {
 //        try {
 //            Thread.sleep(0);
 //        } catch (InterruptedException e) {
