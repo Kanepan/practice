@@ -8,6 +8,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.text.RandomStringGenerator;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,8 +20,8 @@ public class SHAWithRsaTest {
     private static volatile boolean isStart = false;
 
     public static void deal() {
-        int sendCount = 1000000;
-        CountDownLatch cd = new CountDownLatch(sendCount);
+        Long sendCount = 1000000L;
+        CountDownLatch cd = new CountDownLatch(sendCount.intValue());
 
         new Thread(new Runnable() {
             @Override
@@ -60,10 +61,15 @@ public class SHAWithRsaTest {
 
         long time2 = System.nanoTime();
         long cost = (time2 - time);
-        System.out.println("cost:" + cost / 1000 / 1000 + "ms");
-        System.out.println("tps:" + sendCount / cost * 1000 * 1000);
-        System.out.println("avs:" + (time2 - time) / sendCount);
+        System.out.println("cost:" + txfloat((float) cost / 1000000000) + "s");
+        System.out.println("tps:" + sendCount * 1000000000 / cost);
+        System.out.println("avs:" + txfloat((float) (time2 - time) / 1000000 / sendCount) + "ms");
         es.shutdown();
+    }
+
+    public static String txfloat(float f) {
+        DecimalFormat df = new DecimalFormat("0.000");//设置保留位数
+        return df.format(f);
     }
 
     public static void main(String[] args) {
