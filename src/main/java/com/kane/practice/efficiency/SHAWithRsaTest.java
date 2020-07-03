@@ -19,7 +19,7 @@ public class SHAWithRsaTest {
     private static volatile boolean isStart = false;
 
     public static void deal() {
-        int sendCount = 100000;
+        int sendCount = 1000000;
         CountDownLatch cd = new CountDownLatch(sendCount);
 
         new Thread(new Runnable() {
@@ -30,7 +30,7 @@ public class SHAWithRsaTest {
                     es.submit(new Runnable() {
                         @Override
                         public void run() {
-                            test2();
+                            test3();
                             cd.countDown();
                         }
                     });
@@ -45,7 +45,8 @@ public class SHAWithRsaTest {
             e.printStackTrace();
         }
 
-        long time = System.currentTimeMillis();
+        //开始即时
+        long time = System.nanoTime();
 
         isStart = true;
         order.countDown();
@@ -57,10 +58,10 @@ public class SHAWithRsaTest {
             e.printStackTrace();
         }
 
-        long time2 = System.currentTimeMillis();
-        long cost = (time2 - time) / 1000;
-        System.out.println("cost:" + cost);
-        System.out.println("tps:" + sendCount / cost);
+        long time2 = System.nanoTime();
+        long cost = (time2 - time);
+        System.out.println("cost:" + cost / 1000 / 1000 + "ms");
+        System.out.println("tps:" + sendCount / cost * 1000 * 1000);
         System.out.println("avs:" + (time2 - time) / sendCount);
         es.shutdown();
     }
@@ -108,7 +109,7 @@ public class SHAWithRsaTest {
     }
 
     public static void test2() {
-        String input = "sample input";
+        String input = randomStringGenerator.generate(100);
         String siged = SHAWithRSAUtils2.sign(input);
 //        System.out.println(siged);
 //        System.out.println(SHAWithRSAUtils2.verify(input, siged));
@@ -118,6 +119,16 @@ public class SHAWithRsaTest {
             System.err.println(verify);
             System.exit(0);
         }
+    }
+
+    public static void test3() {
+//        try {
+//            Thread.sleep(0);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        String input = randomStringGenerator.generate(100);
+        SecureUtil.md5(input);
     }
 
     public static String byte2Base64String(byte[] bytes) {
