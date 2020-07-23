@@ -41,10 +41,10 @@ public class Test {
 //        String cookies = "upay_user=e793683f03d6bbff6d88858a243b6a27";
 //        String cookies = "upay_user=dc95511c44f4a602579e868deeec3fd1"; //可用
         String  cookies = "upay_user=6c8d4b7606163abe4439e9747102cb30";
-        String phoneNo = "17689973219";
+        String phoneNo = "13161646916";
 
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1; i++) {
             String finalCardPwd = getCard();
             executorService.execute(() -> {
                 synchronized (Test.class) {
@@ -166,7 +166,9 @@ public class Test {
                     System.out.println("充值确认请求异常：" + reChargeConfirmSend.getStatusCode());
                     return;
                 }
-                Document parse = Jsoup.parse(reChargeConfirmSend.readToText());
+                String body = reChargeConfirmSend.readToText();
+                System.out.println("确认结果：" + body);
+                Document parse = Jsoup.parse(body);
                 Element inforFill = parse.getElementsByClass("infor-fill").first();
                 System.out.println("充值结果：" + inforFill.text());
                 //todo 解析具体节点，判断充值成功还是失败
@@ -182,7 +184,11 @@ public class Test {
         for (int i = 0; i < 16; i++) {
             cardPwd = cardPwd + RandomUtils.nextLong(0,9);
         }
-//        cardPwd = "1111111111111111111";
+//        cardPwd = "9807556233825165963";
+//        cardPwd = "9806926400588750756";
+//        cardPwd = "9806115043365086169";
+//        cardPwd = "9801943964701017561";
+//        cardPwd = "9807852471543586468";
         System.out.println("card:" + cardPwd);
         return cardPwd;
     }

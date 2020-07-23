@@ -32,7 +32,7 @@ public class SHAWithRsaTest {
                     es.submit(new Runnable() {
                         @Override
                         public void run() {
-                            test3();
+                            test1();
                             cd.countDown();
                         }
                     });
@@ -146,10 +146,10 @@ public class SHAWithRsaTest {
         }
 
         String input = randomStringGenerator.generate(100);
-        String siged = SHAWithRSAUtils3.sign(input);
+        String siged = SHAWithRSAUtils3.sign(input, privateKey);
 //        System.out.println(siged);
 //        System.out.println(SHAWithRSAUtils2.verify(input, siged));
-        boolean verify = SHAWithRSAUtils3.verify(input, siged);
+        boolean verify = SHAWithRSAUtils3.verify(input, siged, publicKey);
 //        System.out.println(verify);
         if (!verify) {
             System.err.println(verify);
