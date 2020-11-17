@@ -15,12 +15,15 @@ import org.apache.http.client.methods.*;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
+import org.apache.http.config.SocketConfig;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.cookie.Cookie;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -32,6 +35,7 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.impl.cookie.BasicClientCookie2;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 
 import org.slf4j.Logger;
@@ -81,14 +85,19 @@ public class HttpClientUtil {
 
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             tmf.init(ks);
-            SSLContext ctx = SSLContext.getInstance("TLS");
-            ctx.init(null, tmf.getTrustManagers(), null);
+            SSLContext ctx = SSLContexts.custom().loadTrustMaterial(ks, new TrustSelfSignedStrategy()).build();
+            //ctx.init(null, tmf.getTrustManagers(), null);
             reg = RegistryBuilder.<ConnectionSocketFactory>create().register("http", new MyConnectionSocketFactory())
-                    .register("https", new MySSLConnectionSocketFactory(ctx)).build();
+                    .register("https", new SSLConnectionSocketFactory(ctx, NoopHostnameVerifier.INSTANCE)).build();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        httpPool = new PoolingHttpClientConnectionManager(reg);
+
+
+        httpPool = new PoolingHttpClientConnectionManager();
+        //这个在代理中能生效
+        SocketConfig sc = SocketConfig.custom().setSoTimeout(20000).build();
+        httpPool.setDefaultSocketConfig(sc);
         httpPool.setMaxTotal(maxTotal);// 连接池最大并发连接数
         httpPool.setDefaultMaxPerRoute(maxPerRout);// 单路由最大并发数
     }
@@ -143,6 +152,11 @@ public class HttpClientUtil {
         return getImg(url, null, clientKey);
     }
 
+    public static SupplyResult<HttpResponse> getResp(String url, Map<String, String> headerMap, final ProxyInfo proxy,
+                                                     String clientKey, RequestConfig requestConfig) {
+        return executeResp("GET", url, null, headerMap, proxy, clientKey, requestConfig);
+    }
+
     public static SupplyResult<BufferedImage> getImg(String url, Map<String, String> headerMap, String clientKey) {
         SupplyResult<BufferedImage> supplyResult = new SupplyResult<BufferedImage>();
         if (url == null) {
@@ -165,11 +179,6 @@ public class HttpClientUtil {
             supplyResult.setSuccess();
         }
         return supplyResult;
-    }
-
-    public static SupplyResult<HttpResponse> getResp(String url, Map<String, String> headerMap, final ProxyInfo proxy,
-                                                     String clientKey, RequestConfig requestConfig) {
-        return executeResp("GET", url, null, headerMap, proxy, clientKey, requestConfig);
     }
 
     public static SupplyResult<String> get(String url, Map<String, String> headerMap, final ProxyInfo proxy,
@@ -232,6 +241,23 @@ public class HttpClientUtil {
     }
 
     public static SupplyResult<String> post(String url, Map<String, String> paramMap, String charset,
+                                            Map<String, String> headerMap, String clientKey,ProxyInfo proxyInfo) {
+        List<NameValuePair> parameters = new ArrayList<>();
+        if (paramMap != null) {
+            for (Entry<String, String> entry : paramMap.entrySet()) {
+                parameters.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+            }
+        }
+        UrlEncodedFormEntity urlEncodedFormEntity = null;
+        try {
+            urlEncodedFormEntity = new UrlEncodedFormEntity(parameters, charset);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return executeStr("POST", url, urlEncodedFormEntity, headerMap, proxyInfo, clientKey, null);
+    }
+
+    public static SupplyResult<String> post(String url, Map<String, String> paramMap, String charset,
                                             Map<String, String> headerMap, String clientKey, RequestConfig requestConfig) {
         List<NameValuePair> parameters = new ArrayList<>();
         if (paramMap != null) {
@@ -248,7 +274,6 @@ public class HttpClientUtil {
         return executeStr("POST", url, urlEncodedFormEntity, headerMap, null, clientKey, requestConfig);
     }
 
-
     public static SupplyResult<String> post(String url, String params, Map<String, String> headerMap,
                                             String clientKey) {
         HttpEntity httpEntity = null;
@@ -259,17 +284,17 @@ public class HttpClientUtil {
     }
 
 
-	public static SupplyResult<String> postJson(String url, String params, Map<String, String> headerMap, String clientKey) {
-		HttpEntity httpEntity = null;
-		if (StringUtils.isNotBlank(params)) {
-			httpEntity = new StringEntity(params, "UTF-8");
-		}
-		if (headerMap == null) {
-			headerMap = new HashMap<>();
-		}
-		headerMap.put("Content-Type", "application/json;charset=UTF-8");
-		return executeStr("POST", url, httpEntity, headerMap, null, clientKey, null);
-	}
+    public static SupplyResult<String> postJson(String url, String params, Map<String, String> headerMap, String clientKey) {
+        HttpEntity httpEntity = null;
+        if (StringUtils.isNotBlank(params)) {
+            httpEntity = new StringEntity(params, "UTF-8");
+        }
+        if (headerMap == null) {
+            headerMap = new HashMap<>();
+        }
+        headerMap.put("Content-Type", "application/json;charset=UTF-8");
+        return executeStr("POST", url, httpEntity, headerMap, null, clientKey, null);
+    }
 
 
     public static SupplyResult<String> postJson(String url, String params,
@@ -391,10 +416,11 @@ public class HttpClientUtil {
     }
 
     private static SupplyResult<String> executeStr(String requestType, String url, HttpEntity httpEntity,
-                                                   Map<String, String> headerMap, final ProxyInfo proxy, String clientKey, RequestConfig requestConfig) {
+                                                   Map<String, String> headerMap,  ProxyInfo proxy, String clientKey, RequestConfig requestConfig) {
         SupplyResult<String> result = new SupplyResult<>();
         Integer statusCode = -1;
         CloseableHttpResponse response = null;
+
         try {
             response = execute(requestType, url, httpEntity, headerMap, proxy, clientKey,
                     requestConfig);
@@ -406,6 +432,7 @@ public class HttpClientUtil {
                         result.setStatus(SupplyResult.STATUS_UNCONFIRM);
                         result.setResultCode(statusCode + "");
                         result.setResultMsg(statusCode + " error");
+//                        System.out.println(EntityUtils.toString(response.getEntity(), "utf-8"));
                         return result;
                     }
                     result.setStatus(SupplyResult.STATUS_FAILED);
@@ -417,6 +444,7 @@ public class HttpClientUtil {
                 if (headerMap != null) {
                     contentType = headerMap.get("Content-Type");
                 }
+
                 String charset = null;
                 ContentType contentType1 = ContentType.get(response.getEntity());
                 if (StringUtils.isBlank(charset) && contentType1 != null) {
@@ -432,6 +460,13 @@ public class HttpClientUtil {
                 }
                 if (StringUtils.isBlank(charset)) {
                     charset = "UTF-8";
+                }
+
+                if(response.getHeaders("Set-Cookie")!=null){
+                    for(Header h:response.getHeaders("Set-Cookie")){
+                        System.out.println("Set-Cookie  --------------" + h.getValue());
+                    }
+
                 }
                 result.setModule(EntityUtils.toString(response.getEntity(), charset));
                 result.setSuccess();

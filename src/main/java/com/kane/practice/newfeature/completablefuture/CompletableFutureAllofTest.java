@@ -13,10 +13,11 @@ public class CompletableFutureAllofTest {
 
 
     public static void main(String[] args) {
-        test1();
-        test2();
+//        test1();
+//        test2();
 
-        test4();
+        test3();
+//        test4();
     }
 
     private static void test1() {
@@ -47,11 +48,11 @@ public class CompletableFutureAllofTest {
         CompletableFuture<Boolean> future1
                 = CompletableFuture.supplyAsync(() -> {
             //这里如果有sleep 就需要 在最后join
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                Thread.sleep(2000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
             return RandomUtils.nextBoolean();
         });
 
@@ -80,11 +81,11 @@ public class CompletableFutureAllofTest {
         CompletableFuture<Boolean> future1
                 = CompletableFuture.supplyAsync(() -> {
             //这里如果有sleep,thenApply就变成异步了
-//            try {
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             return RandomUtils.nextBoolean();
         });
 

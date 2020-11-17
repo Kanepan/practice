@@ -54,7 +54,6 @@ public class CompletableFutureAllofTest2 {
             }
             es.shutdown();
         });
-
     }
 
 

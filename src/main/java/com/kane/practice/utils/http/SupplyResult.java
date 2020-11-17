@@ -19,7 +19,10 @@ public class SupplyResult<T> implements Serializable {
 
     private String resultMsg;
 
+    private String httpMsg;
+
     private T module;
+
 
     public boolean isSuccess() {
         return status == STATUS_SUCCESS;
@@ -31,6 +34,14 @@ public class SupplyResult<T> implements Serializable {
 
     public boolean isUnConfirm() {
         return status == STATUS_UNCONFIRM;
+    }
+
+    public String getHttpMsg() {
+        return httpMsg;
+    }
+
+    public void setHttpMsg(String httpMsg) {
+        this.httpMsg = httpMsg;
     }
 
     public Integer getStatus() {
