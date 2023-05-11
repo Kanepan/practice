@@ -36,7 +36,7 @@ public class LambdaTest {
     //
     private static void test2() {
         MyLambdaInterface myLambdaInterface = s -> System.out.println(s);
-
+        
     }
 
     interface MyLambdaInterface {

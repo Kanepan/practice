@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class ThreadContextSwitchTest {
-    private static final ArrayBlockingQueue<Long>  queue = new ArrayBlockingQueue<Long>(5000);
+    private static final ArrayBlockingQueue<Long> queue = new ArrayBlockingQueue<Long>(5000);
 
     private static AtomicLong count = new AtomicLong();
 
@@ -17,20 +17,20 @@ public class ThreadContextSwitchTest {
 
     public static void main(String[] args) {
         for (int i = 0; i < 2000; i++) {
-            es.submit(new Thread(new ComsumerRunnable(),"消费线程" + i));
+            es.submit(new Thread(new ComsumerRunnable(), "消费线程" + i));
         }
 
         producer();
     }
 
-    static class ComsumerRunnable implements  Runnable{
+    static class ComsumerRunnable implements Runnable {
         public void run() {
-            while(true){
-                try{
+            while (true) {
+                try {
                     Long l = queue.take();
                     //System.out.println(l.toString());
                     doSync();
-                }catch(Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -38,24 +38,22 @@ public class ThreadContextSwitchTest {
     }
 
 
-
-    public static void producer(){
-        while(true){
-            try{
+    public static void producer() {
+        while (true) {
+            try {
                 boolean flag = queue.offer(count.incrementAndGet());
-                if(!flag){
+                if (!flag) {
 //                    System.out.println(count.get() + "入队失败");
                 }
 //                Thread.sleep(1);
-            }catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
 
-
-    public static void doSync(){
+    public static void doSync() {
         try {
             Thread.sleep(10);
         } catch (InterruptedException e) {
