@@ -28,7 +28,7 @@ public class ThreadContextSwitchTest {
             while (true) {
                 try {
                     Long l = queue.take();
-                    //System.out.println(l.toString());
+                    System.out.println(l.toString());
                     doSync();
                 } catch (Exception e) {
                     e.printStackTrace();

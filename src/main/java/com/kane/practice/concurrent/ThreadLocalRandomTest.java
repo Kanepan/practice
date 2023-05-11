@@ -28,7 +28,7 @@ public class ThreadLocalRandomTest {
     private static final ThreadLocalRandom threadLocalRandom = ThreadLocalRandom.current();
 
     private static ExecutorService es = Executors.newFixedThreadPool(20);
-    private static int count = 1000000;
+    private static int count = 100;
 
     public static void main(String[] args) {
         TimeCostUtils timeCostUtils = new TimeCostUtils();
@@ -38,9 +38,9 @@ public class ThreadLocalRandomTest {
             list.add(new Callable() {
                 @Override
                 public Object call() throws Exception {
-                    for (int i = 0; i < 100; i++) {
-//                        doRandom();
-                        doThreadLocalRandom();
+                    for (int i = 0; i < 1000000; i++) {
+                        doRandom();
+//                        doThreadLocalRandom();
                     }
 
                     return null;
@@ -54,6 +54,7 @@ public class ThreadLocalRandomTest {
         }
 
         System.out.println("time cost : " + timeCostUtils.cost() + "ms");
+        es.shutdown();
     }
 
 
