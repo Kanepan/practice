@@ -8,31 +8,33 @@
 
 package com.kane.practice.newfeature.optional;
 
+import com.kane.common.domain.Result;
+
 import java.util.Arrays;
 import java.util.Optional;
 
 public class OptionalTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         OptionalTest optionalTest = new OptionalTest();
-        optionalTest.test();
-        System.out.println("--------------------------");
-        optionalTest.test2();
-        System.out.println("--------------------------");
-        optionalTest.test3();
-        System.out.println("--------------------------");
-        optionalTest.test4();
+        optionalTest.test6();
+//        System.out.println("--------------------------");
+//        optionalTest.test2();
+//        System.out.println("--------------------------");
+//        optionalTest.test3();
+//        System.out.println("--------------------------");
+//        optionalTest.test4();
     }
 
     private void test() {
         Person person = new Person("测试", 18);
         Optional<Person> personOpt = Optional.ofNullable(person);
         personOpt.ifPresent(p -> System.out.println(p.getAge()));
+        // ifPresent  是 Consumer<? super T> consumer
 
         personOpt = Optional.ofNullable(null);
         Person person2 = personOpt.orElse(new Person("测试other", 19));
         System.out.println(person2.getName());
-
     }
 
 
@@ -44,6 +46,8 @@ public class OptionalTest {
 
         personOpt = Optional.ofNullable(null);
         Person person2 = personOpt.orElseGet(() -> getNewPerson());
+
+        // orElseGet  是 Supplier<? extends T> other
 
         System.out.println(person2.getName());
     }
@@ -88,6 +92,54 @@ public class OptionalTest {
         System.out.println(userOpt.flatMap(u -> u.getAddress()).flatMap(a -> a.getCountry()).map(c -> c.getName()).orElse("china"));
 
     }
+
+    private void test5() throws Exception {
+        Person person = new Person("测试1", 28);
+
+        if (person == null || isEmpty(person.getName())) {
+            throw new Exception();
+        }
+        String name = person.getName();
+        // 业务省略...
+
+        // 使用Optional改造
+        Optional.ofNullable(person).filter(s -> !isEmpty(s.getName())).orElseThrow(() -> new Exception());
+
+        name = person.getName();
+        // 业务省略...
+        System.out.println(name);
+    }
+
+    private void test6() throws Exception {
+        Person person = new Person("kane",18);
+        Result<Person> result = Result.succeed(person);
+
+//        result = Result.failed("没有数据");
+//        System.out.println(getPersonName(result));
+        System.out.println(getPersonNameNew(result));
+    }
+
+    public static String getPersonName(Result<Person> result) throws IllegalArgumentException {
+        if (result != null) {
+            Person p = result.getData();
+            if (p != null) {
+                return p.getName();
+            }
+        }
+        throw new IllegalArgumentException("The value of param comp isn't available.");
+    }
+
+    public static String getPersonNameNew(Result<Person> result) throws IllegalArgumentException {
+        return Optional.ofNullable(result)//
+                .map(Result::getData)  // 相当于c -> c.getResult()，下同
+                .map(Person::getName)
+                .orElseThrow(()->new IllegalArgumentException("The value of param comp isn't available."));
+    }
+
+    public static boolean isEmpty(CharSequence str) {
+        return str == null || str.length() == 0;
+    }
+
 
     public class Parterner {
         private Person person;
@@ -171,6 +223,7 @@ public class OptionalTest {
         public void setName(String name) {
             this.name = name;
         }
+
     }
 
     public Optional deal(Person person) {
