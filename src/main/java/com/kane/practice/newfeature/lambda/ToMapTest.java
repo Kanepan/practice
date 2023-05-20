@@ -12,16 +12,26 @@ import java.util.stream.Collectors;
 public class ToMapTest {
     public static void main(String[] args) {
         List<Employee> employeeList = Arrays.asList(
-                new Employee(101, "张三", 18, 9999.99),
-                new Employee(102, "李四", 59, 6666.66),
-                new Employee(103, "王五", 28, 3333.33),
-                new Employee(103, "王五1", 28, 3333.33),
-                new Employee(104, "赵六", 8, 7777.77)
+//                new Employee(101, "张三", 18, 9999.99),
+//                new Employee(102, "李四", 59, 6666.66),
+//                new Employee(103, "王五", 28, 3333.33),
+//                new Employee(103, "王五1", 28, 3333.33),
+//                new Employee(104, "赵六", 8, 7777.77)
         );
         //在 id 重复的情况下，保留新的值, 不会抛出异常Duplicate key 王五
         Map<Integer, Double> collect4 = employeeList.stream()
                 .collect(Collectors.toMap(Employee::getId, Employee::getSalary, (oldValue, newValue) -> newValue));
         System.out.println(collect4);
+
+        double d = employeeList.stream()
+                .collect(Collectors.toMap(Employee::getId, Employee::getSalary, (oldValue, newValue) -> newValue)).values().stream()
+                .reduce(0d, Double::max);
+        System.out.println(d);
+
+        double d2 = employeeList.stream()
+                .collect(Collectors.toMap(Employee::getId, Employee::getSalary, (oldValue, newValue) -> newValue)).values().stream()
+                .reduce((a, b) -> a + b).ifPresent();
+        System.out.println(d2);
         /**
          * id作为Map的key,name作为value的集合
          * */
