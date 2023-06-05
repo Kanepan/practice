@@ -195,4 +195,18 @@ public class ShortBizUidGenerator implements BizUidGenerator {
             this.epochSeconds = TimeUnit.MILLISECONDS.toSeconds(DateUtils.parseByDayPattern(epochStr).getTime());
         }
     }
+
+    public static void main(String[] args) throws Exception {
+        ShortBizUidGenerator shortBizUidGenerator = new ShortBizUidGenerator();
+        shortBizUidGenerator.init();
+        shortBizUidGenerator.setWorkerBits(7);
+
+        shortBizUidGenerator.nextId("test");
+        shortBizUidGenerator.nextId("test");
+        shortBizUidGenerator.nextId("test");
+        shortBizUidGenerator.nextId("test");
+        long id = shortBizUidGenerator.nextId("test");
+        System.out.println(id);
+        System.out.println(shortBizUidGenerator.parseUID(id));
+    }
 }

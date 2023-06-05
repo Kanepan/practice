@@ -15,7 +15,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * 分布式高效有序 ID 生产黑科技(sequence)
  *
  * <p>优化开源项目：https://gitee.com/yu120/sequence</p>
- *  加一个解析id的方法
+ * 加一个解析id的方法
+ *
  * @author hubin
  * @since 2016-08-18
  */
@@ -61,37 +62,35 @@ public class Sequence {
 
     public Sequence() {
         this.datacenterId = getDatacenterId(maxDatacenterId);
+        System.out.println("datacenterId:" + datacenterId);
         this.workerId = getMaxWorkerId(datacenterId, maxWorkerId);
+        System.out.println("workerId:" + workerId);
     }
 
 
-
-
     public String parse(long uid) {
-        //1665535097150779394
-        //1665535097222082562
-        //1665535101433163777
+
 
         long longBits = BitsAllocator.TOTAL_BITS;
+        System.out.println("longBits:" + longBits);
 
-//        long timestampBits = timestampBits;
-        long workerIdBits = workerId;
 
-        // parse UID 这里
-//        long sequence = (uid << (totalBits - sequenceBits)) >>> (totalBits - sequenceBits);
         long sequence = uid << (longBits - sequenceBits) >>> (longBits - sequenceBits);
+
+//        long sequence = uid << (longBits - sequenceBits) ;
 //        long workerId = (uid << (timestampBits + signBits)) >>> (totalBits - workerIdBits);
-        long workerId = (uid << (longBits - sequenceBits - workerIdBits)) >>> (longBits - workerIdBits);
+        long workerIdlong = (uid << (longBits - timestampLeftShift)) >>> (longBits - datacenterIdBits);
+        long datacenterIdlong = (uid << (longBits - timestampLeftShift + workerIdBits)) >>> (longBits - workerIdBits);
+
         long deltaSeconds = uid >>> (timestampLeftShift);
 
         Date thatTime = new Date(twepoch + deltaSeconds);
         String thatTimeStr = DateUtils.formatByDateTimePattern(thatTime);
 
         // format as string
-        return String.format("{\"UID\":\"%d\",\"timestamp\":\"%s\",\"workerId\":\"%d\",\"sequence\":\"%d\"}",
-                uid, thatTimeStr, workerId, sequence);
+        return String.format("{\"UID\":\"%d\",\"timestamp\":\"%s\",\"workerId\":\"%d\",\"datacenterId\":\"%d\",\"sequence\":\"%d\"}",
+                uid, thatTimeStr, workerIdlong, datacenterIdlong, sequence);
     }
-
 
 
     /**
@@ -146,7 +145,7 @@ public class Sequence {
                 }
             }
         } catch (Exception e) {
-           e.printStackTrace();
+            e.printStackTrace();
         }
         return id;
     }
@@ -212,9 +211,10 @@ public class Sequence {
     public static void main(String[] args) throws InterruptedException {
         Sequence sequence = new Sequence();
         long id = sequence.nextId();
+
+
         System.out.println(id);
         System.out.println(sequence.parse(id));
-        System.out.println(getDatacenterId(sequence.maxDatacenterId));
     }
 
 }
