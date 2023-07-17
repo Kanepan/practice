@@ -12,7 +12,7 @@ public class Lambda10Example {
 //        System.out.println("-------------------");
 //        lambda10Example.test2();
         System.out.println("-------------------");
-        lambda10Example.test9();
+        lambda10Example.test12();
     }
 
     // 方法test1 使用lambda表达式实现集合遍历    1.8之前
@@ -36,7 +36,7 @@ public class Lambda10Example {
         list.forEach(item -> System.out.println(item));
         System.out.println("-------------------");
         //使用lambda表达式
-        list.sort((item1, item2) -> item2.compareTo(item1));
+        list.sort(Comparator.reverseOrder());
         list.forEach(item -> System.out.println(item));
     }
 
@@ -108,6 +108,28 @@ public class Lambda10Example {
         groupeds.forEach((key, value) -> System.out.println(key + " -->" + value));
     }
 
+
+    public void test12() {
+        List<Person> list = Arrays.asList(
+                new Person("zhangsan", 20),
+                new Person("lisi", 30),
+                new Person("wangwu", 40),
+                new Person("zhangsan", 50)
+        );
+        //传统方式
+        list.forEach(item -> System.out.println(item.getName()));
+        System.out.println("-------------------");
+        //使用lambda表达式进行分组
+
+        list.stream().collect(Collectors.groupingBy(Person::getName)).forEach((name, personList) -> {
+            System.out.println(name);
+            personList.forEach(person -> System.out.println(person.getAge()));
+        });
+
+        Map<String, List<Person>> groupeds = list.stream().sorted(Comparator.comparingInt(Person::getAge)).collect(Collectors.groupingBy(Person::getGroupKey));
+        groupeds.forEach((key, value) -> System.out.println(key + " -->" + value));
+    }
+
     // bean Person with name and age
     public class Person {
         private String name;
@@ -133,6 +155,11 @@ public class Lambda10Example {
                     "name='" + name + '\'' +
                     ", age=" + age +
                     '}';
+        }
+
+        private String split = "_";
+        public String getGroupKey(){
+            return name + split + age;
         }
     }
 

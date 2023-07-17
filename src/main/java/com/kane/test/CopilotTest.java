@@ -13,7 +13,7 @@ public class CopilotTest {
         Date date1 = new Date();
         Date date2 = new Date();
         int days = calculateDaysBetweenTwoDates(date1, date2);
-        System.out.println("days between two dates: " + days);
+        System.out.println("dys between two dates: " + days);
 
         int[] nums  = new int[]{1, 63, 24, 56, 4};
         //冒泡排序
