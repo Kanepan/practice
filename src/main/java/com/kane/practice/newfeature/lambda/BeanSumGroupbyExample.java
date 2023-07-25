@@ -12,18 +12,23 @@ public class BeanSumGroupbyExample {
         beanList.add(new Bean3(1, "A", 10, 20, 30, 40, 50, 60, 70, 80));
         beanList.add(new Bean3(2, "B", 10, 20, 30, 40, 50, 60, 70, 80));
         beanList.add(new Bean3(1, "C", 10, 20, 30, 40, 50, 60, 70, 80));
+        beanList.add(new Bean3(1, "C", 10, 20, 30, 40, 50, 60, 70, 80));
+        beanList.add(new Bean3(1, "C", 10, 20, 30, 40, 50, 60, 70, 80));
+
+        beanList.add(new Bean3(2, "A", 10, 20, 30, 40, 50, 60, 70, 80));
         beanList.add(new Bean3(2, "A", 10, 20, 30, 40, 50, 60, 70, 80));
 
         // 根据ID字段分组，并对其他字段求和创建新对象
-        Map<Integer, SumBean> sumByGroup = beanList.stream()
-                .collect(Collectors.groupingBy(Bean3::getId, Collectors.reducing(new SumBean(), Bean3::toSumBean, SumBean::combine)));
+        Map<String, SumBean> sumByGroup = beanList.stream()
+//                .collect(Collectors.groupingBy(Bean3::getId, Collectors.reducing(new SumBean(), Bean3::toSumBean, SumBean::combine)));
+
+                .collect(Collectors.toMap(Bean3::groupby, Bean3::toSumBean, SumBean::combine2));
 
 //        List<SumBean> mergedList = new ArrayList<>(sumByGroup.values());
 
 
-
         // 打印结果
-        for (Map.Entry<Integer, SumBean> entry : sumByGroup.entrySet()) {
+        for (Map.Entry<String, SumBean> entry : sumByGroup.entrySet()) {
             System.out.println("Sum of fields for ID " + entry.getKey() + ": " + entry.getValue());
         }
     }
@@ -53,6 +58,10 @@ class Bean3 {
         this.field6 = field6;
         this.field7 = field7;
         this.field8 = field8;
+    }
+
+    public String groupby() {
+        return this.id + this.group;
     }
 
     public int getId() {
@@ -96,12 +105,15 @@ class Bean3 {
     }
 
     public SumBean toSumBean() {
-        return new SumBean(field1, field2, field3, field4, field5, field6, field7, field8);
+        System.out.println("我被转化成 sumbean ID" + this.id);
+        return new SumBean(id, field1, field2, field3, field4, field5, field6, field7, field8);
     }
 }
 
 // 求和结果类
 class SumBean {
+    private int id;
+
     private int field1Sum;
     private int field2Sum;
     private int field3Sum;
@@ -112,6 +124,7 @@ class SumBean {
     private int field8Sum;
 
     public SumBean() {
+        System.out.println("我被创建了");
         this.field1Sum = 0;
         this.field2Sum = 0;
         this.field3Sum = 0;
@@ -122,7 +135,8 @@ class SumBean {
         this.field8Sum = 0;
     }
 
-    public SumBean(int field1Sum, int field2Sum, int field3Sum, int field4Sum, int field5Sum, int field6Sum, int field7Sum, int field8Sum) {
+    public SumBean(int id, int field1Sum, int field2Sum, int field3Sum, int field4Sum, int field5Sum, int field6Sum, int field7Sum, int field8Sum) {
+        this.id = id;
         this.field1Sum = field1Sum;
         this.field2Sum = field2Sum;
         this.field3Sum = field3Sum;
@@ -134,6 +148,28 @@ class SumBean {
     }
 
     public SumBean combine(SumBean other) {
+        System.out.println("this id " + id + " other id " + other.id);
+
+
+//        this.id = other.id;
+        SumBean combinedBean = new SumBean();
+        combinedBean.id = this.id; //
+        combinedBean.field1Sum = this.field1Sum + other.field1Sum;
+        combinedBean.field2Sum = this.field2Sum + other.field2Sum;
+        combinedBean.field3Sum = this.field3Sum + other.field3Sum;
+        combinedBean.field4Sum = this.field4Sum + other.field4Sum;
+        combinedBean.field5Sum = this.field5Sum + other.field5Sum;
+        combinedBean.field6Sum = this.field6Sum + other.field6Sum;
+        combinedBean.field7Sum = this.field7Sum + other.field7Sum;
+        combinedBean.field8Sum = this.field8Sum + other.field8Sum;
+        return combinedBean;
+
+    }
+
+
+    public SumBean combine2(SumBean other) {
+        System.out.println("聚合：this id: " + this.id + " other id " + other.id);
+//        this.id = other.id;
         this.field1Sum += other.field1Sum;
         this.field2Sum += other.field2Sum;
         this.field3Sum += other.field3Sum;
@@ -148,6 +184,7 @@ class SumBean {
     @Override
     public String toString() {
         return "SumBean{" +
+                "id=" + id +
                 "field1Sum=" + field1Sum +
                 ", field2Sum=" + field2Sum +
                 ", field3Sum=" + field3Sum +

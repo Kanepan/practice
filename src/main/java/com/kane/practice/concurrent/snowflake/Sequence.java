@@ -212,6 +212,7 @@ public class Sequence {
         Sequence sequence = new Sequence();
         long id = sequence.nextId();
 
+        id = 1664729103684186114L;
 
         System.out.println(id);
         System.out.println(sequence.parse(id));
