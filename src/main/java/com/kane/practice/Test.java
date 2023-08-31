@@ -31,6 +31,9 @@ public class Test {
         map.put("Proxy-Authorization:Basic", Base64.encode("3389775708@qq.com:12345678aBC".getBytes()));
         SupplyResult<String> r=  HttpClientUtil.get("http://api.wandoudl.com//api/whitelist/update?app_key=60ac8cfd2e34f8d39874074a5cc4e15b&ip=115.230.120.61", map, null);
         System.out.println(r);
+
+
+        System.out.println(r);
     }
 
 

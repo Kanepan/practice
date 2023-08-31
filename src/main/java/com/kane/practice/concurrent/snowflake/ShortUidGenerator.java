@@ -47,6 +47,7 @@ public class ShortUidGenerator implements UidGenerator, InitializingBean {
         bitsAllocator = new BitsAllocator(timeBits, workerBits, seqBits);
 
         this.setEpochStr(epochStr);
+
         // initialize worker id
         if (workerIdAssigner != null) {
             workerId = workerIdAssigner.assignWorkerId();
@@ -55,10 +56,11 @@ public class ShortUidGenerator implements UidGenerator, InitializingBean {
             }
         }
 
+
         LOGGER.info("Initialized bits(1, {}, {}, {}) for workerID:{}", timeBits, workerBits, seqBits, workerId);
     }
 
-    public static Integer getWorkerBits(){
+    public static Integer getWorkerBits() {
         return workerBits;
     }
 
@@ -85,7 +87,7 @@ public class ShortUidGenerator implements UidGenerator, InitializingBean {
 //        long sequence = (uid << (totalBits - sequenceBits)) >>> (totalBits - sequenceBits);
         long sequence = uid << (longBits - sequenceBits) >>> (longBits - sequenceBits);
 //        long workerId = (uid << (timestampBits + signBits)) >>> (totalBits - workerIdBits);
-        long workerId = (uid << (longBits - sequenceBits - workerIdBits)) >>> (longBits - workerIdBits);
+        long workerId = (uid << (longBits - sequenceBits - workerIdBits )) >>> (longBits - workerIdBits);
         long deltaSeconds = uid >>> (workerIdBits + sequenceBits);
 
         Date thatTime = new Date(TimeUnit.SECONDS.toMillis(epochSeconds + deltaSeconds));
@@ -184,5 +186,21 @@ public class ShortUidGenerator implements UidGenerator, InitializingBean {
             this.epochStr = epochStr;
             this.epochSeconds = TimeUnit.MILLISECONDS.toSeconds(DateUtils.parseByDayPattern(epochStr).getTime());
         }
+    }
+
+    public static void main(String[] args) throws Exception {
+        ShortUidGenerator shortUidGenerator = new ShortUidGenerator();
+        shortUidGenerator.afterPropertiesSet();
+
+
+
+        shortUidGenerator.nextId();
+        shortUidGenerator.nextId();
+        shortUidGenerator.nextId();
+        shortUidGenerator.nextId();
+
+        long id = shortUidGenerator.nextId();
+        System.out.println(id);
+        System.out.println(shortUidGenerator.parseUID(id));
     }
 }

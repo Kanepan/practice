@@ -28,6 +28,9 @@ public interface WorkerIdAssigner {
      *
      * @return assigned worker id
      */
-    long assignWorkerId();
+
+    default long assignWorkerId() {
+        return 10L;
+    }
 
 }
