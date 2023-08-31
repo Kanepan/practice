@@ -10,13 +10,12 @@ package com.kane.practice.newfeature.optional;
 
 import com.kane.common.domain.Result;
 
-import java.util.Arrays;
 import java.util.Optional;
 
-public class OptionalTest {
+public class OptionalJdk9Test {
 
     public static void main(String[] args) throws Exception {
-        OptionalTest optionalTest = new OptionalTest();
+        OptionalJdk9Test optionalTest = new OptionalJdk9Test();
         optionalTest.test6();
 //        System.out.println("--------------------------");
 //        optionalTest.test2();
