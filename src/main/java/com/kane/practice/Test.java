@@ -6,6 +6,7 @@ import com.kane.practice.utils.security.Base64;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.text.RandomStringGenerator;
 
+import java.io.File;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,8 +30,17 @@ public class Test {
 
         Map<String, String> map = new HashMap<>();
         map.put("Proxy-Authorization:Basic", Base64.encode("3389775708@qq.com:12345678aBC".getBytes()));
-        SupplyResult<String> r=  HttpClientUtil.get("http://api.wandoudl.com//api/whitelist/update?app_key=60ac8cfd2e34f8d39874074a5cc4e15b&ip=115.230.120.61", map, null);
+        SupplyResult<String> r = HttpClientUtil.get("http://api.wandoudl.com//api/whitelist/update?app_key=60ac8cfd2e34f8d39874074a5cc4e15b&ip=115.230.120.61", map, null);
         System.out.println(r);
+
+
+        //读取某个文件夹下面的所有文件 使用ioutils
+        File file = new File("D:\\test");
+        File[] files = file.listFiles();
+
+        for (File file2 : files) {
+            System.out.println(file2.getName());
+        }
 
 
         System.out.println(r);

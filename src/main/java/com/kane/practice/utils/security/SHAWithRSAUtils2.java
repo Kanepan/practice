@@ -1,10 +1,6 @@
 package com.kane.practice.utils.security;
 
-import net.dongliu.commons.Sys;
 import org.apache.commons.codec.binary.Base64;
-import sun.misc.BASE64Decoder;
-
-import java.io.UnsupportedEncodingException;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;

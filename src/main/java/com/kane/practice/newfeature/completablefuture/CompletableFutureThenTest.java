@@ -1,7 +1,5 @@
 package com.kane.practice.newfeature.completablefuture;
 
-import org.apache.commons.lang3.RandomStringUtils;
-
 import java.util.concurrent.*;
 
 public class CompletableFutureThenTest {
@@ -68,7 +66,7 @@ public class CompletableFutureThenTest {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            return RandomStringUtils.randomAlphabetic(10);
+            return System.currentTimeMillis();
         }).thenCombineAsync(
                 CompletableFuture.supplyAsync(() -> {
                     try {
@@ -78,7 +76,7 @@ public class CompletableFutureThenTest {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    return RandomStringUtils.randomAlphabetic(20);
+                    return System.currentTimeMillis();
                 })
                 , (r1, r2) -> {
                     // 合并两个查询结果

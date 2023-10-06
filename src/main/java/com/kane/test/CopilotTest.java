@@ -1,6 +1,5 @@
 package com.kane.test;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Arrays;
@@ -9,6 +8,12 @@ import java.util.Date;
 public class CopilotTest {
 
     public static void main(String[] args) {
+
+
+
+    }
+
+    private void test(){
         //calculate days between two dates
         Date date1 = new Date();
         Date date2 = new Date();
@@ -33,8 +38,6 @@ public class CopilotTest {
         quickSort(nums, 0, nums.length - 1);
 
         System.out.println("快速排序结果：" + Arrays.toString(nums));
-
-
 
     }
 
