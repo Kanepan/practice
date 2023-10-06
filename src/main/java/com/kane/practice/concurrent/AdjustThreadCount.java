@@ -1,6 +1,6 @@
 package com.kane.practice.concurrent;
 
-import javax.annotation.PostConstruct;
+
 import java.util.concurrent.*;
 
 public class AdjustThreadCount {
