@@ -1,5 +1,6 @@
 package com.kane.practice;
 
+import com.alibaba.fastjson.JSON;
 import com.kane.practice.utils.http.HttpClientUtil;
 import com.kane.practice.utils.http.SupplyResult;
 import com.kane.practice.utils.security.Base64;
@@ -42,9 +43,7 @@ public class Test {
             System.out.println(file2.getName());
         }
 
-
         System.out.println(r);
     }
-
 
 }

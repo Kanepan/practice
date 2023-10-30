@@ -14,7 +14,7 @@ public class ToMapTest {
         List<Employee> employeeList = Arrays.asList(
                 new Employee(101, "张三", 18, 9999.99),
                 new Employee(102, "李四", 59, 6666.66),
-//                new Employee(103, "王五", 28, 3333.33),
+                new Employee(103, "王五", 28, 3333.33),
                 new Employee(103, "王五1", 28, 3333.33),
                 new Employee(104, "赵六", 8, 7777.77)
         );

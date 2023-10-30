@@ -1,7 +1,12 @@
 package com.kane.practice.newfeature;
 
+import java.util.Date;
+
 public class CopilotTest {
 
+    public static void main(String[] args) {
+        System.out.println(new Date().getTime());
+    }
 
     public void formLength() {
 
