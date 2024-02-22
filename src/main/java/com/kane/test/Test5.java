@@ -2,6 +2,7 @@ package com.kane.test;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -14,7 +15,7 @@ public class Test5 {
 
         System.out.println(b1.compareTo(BigDecimal.valueOf(9.1)));
 
-        List<?> lists = select();
+        List<Person> lists = select();
 
         // lists to List<String>
         List<String> json = JSONArray.parseArray(JSON.toJSONString(lists), String.class);
@@ -31,10 +32,16 @@ public class Test5 {
 
         lists.stream().filter(item -> item != null ).skip(0).limit(1).forEach(item -> System.out.println(item));
 
+        System.out.println("---------");
+
+        lists.stream().filter(item -> item.getAge() == 18).forEach(item -> System.out.println(item));
+
+        System.out.println("---------");
+        lists.stream().forEach(item -> System.out.println(item));
 
     }
 
-    private static List<?> select(){
+    private static List<Person> select(){
         Person person = new Person();
         person.setName("kane");
         person.setAge(18);
