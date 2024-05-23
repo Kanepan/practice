@@ -59,7 +59,11 @@ public class MetaExecutor {
         if (meta instanceof Condition) {
             return ((Condition) meta).execute(context);
         } else if (meta instanceof Action) {
-            return ((Action) meta).execute(context);
+            boolean result = ((Action) meta).execute(context);
+            if (result) {
+                context.setHasBenefit(true);
+            }
+            return result;
         }
         return false;
     }

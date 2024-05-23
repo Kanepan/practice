@@ -23,6 +23,6 @@ public class SkuFixPriceAction implements Action {
         context.getResponseContext().setDiscountFee(oldDiscountFee.add(discountFee));
         System.out.println(String.format("原价%s 一口价后%s", context.getAmount(), discountAmount));
         System.out.println("优惠信息" + context.getResponseContext().getName());
-        return false;
+        return true;
     }
 }
