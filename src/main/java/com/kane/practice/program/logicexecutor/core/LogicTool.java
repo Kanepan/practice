@@ -80,7 +80,6 @@ public class LogicTool {
         // load pairMetaData
         MetaData<Meta> metaData = MetaParser.fromJson(json);
 
-        // 设置 参数
 
         MetaExecutor metaExecutor = new MetaExecutor();
         LogicContext context = new LogicContext();

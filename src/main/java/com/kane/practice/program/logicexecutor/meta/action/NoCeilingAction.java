@@ -6,6 +6,8 @@ import com.kane.practice.program.logicexecutor.meta.Action;
 public class NoCeilingAction implements Action {
     @Override
     public boolean execute(LogicContext context) {
-        return false;
+        Integer num = context.getOrderSum();
+        context.setMultiple(num.intValue());
+        return true;
     }
 }
