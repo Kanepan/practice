@@ -3,6 +3,8 @@ package com.kane.practice.program.logicexecutor.meta.action;
 import com.kane.practice.program.logicexecutor.core.context.LogicContext;
 import com.kane.practice.program.logicexecutor.meta.Action;
 
+import java.math.BigDecimal;
+
 public class DiscountAction implements Action {
 //    @Override
 //    public String getMetaName() {
@@ -11,12 +13,16 @@ public class DiscountAction implements Action {
 
     @Override
     public boolean execute(LogicContext context) {
-//        Integer amount = (Integer) context.getParams()[0].getValue();
-//        Integer amount = (Integer) context.getParams()[0].getValue();
+        String discountStr = (String) context.getParam("discountRate");
+        BigDecimal amount = (BigDecimal) context.getResource("OrderAmountResource");
+        BigDecimal discountAmount = (new BigDecimal(discountStr).multiply(amount)).setScale(2, BigDecimal.ROUND_HALF_UP);
 
-//        System.out.println("DiscountAction execute: " + amount);
-//        context.setReturnValue("DiscountAction execute");
-        System.out.println("DiscountAction execute");
+        BigDecimal discountFee = amount.subtract(discountAmount);
+        if (discountFee.compareTo(BigDecimal.ZERO) < 0) {
+            discountFee = BigDecimal.ZERO;
+        }
+        context.getResponseContext().setDiscountFee(discountFee);
+        System.out.println(String.format("原价%s 打折后%s", amount, discountAmount));
         return true;
     }
 }

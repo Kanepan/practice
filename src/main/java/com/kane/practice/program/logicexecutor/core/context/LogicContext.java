@@ -22,6 +22,15 @@ public class LogicContext {
 
     private boolean hasBenefit = false;
 
+    public BigDecimal getDiscountMoney() {
+        if (discountMoney.compareTo(BigDecimal.ZERO) == 0 && this.responseContext != null) {
+            return amount.subtract(this.responseContext.getDiscountFee());
+        } else if (discountMoney.compareTo(BigDecimal.ZERO) == 0) {
+            return amount;
+        }
+        return discountMoney;
+    }
+
 
     public ResponseContext getResponseContext() {
         return responseContext;
@@ -67,9 +76,6 @@ public class LogicContext {
         this.multiple = multiple;
     }
 
-    public BigDecimal getDiscountMoney() {
-        return discountMoney;
-    }
 
     public void setDiscountMoney(BigDecimal discountMoney) {
         this.discountMoney = discountMoney;
