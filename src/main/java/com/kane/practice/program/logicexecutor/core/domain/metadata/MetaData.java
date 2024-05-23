@@ -2,6 +2,7 @@ package com.kane.practice.program.logicexecutor.core.domain.metadata;
 
 import com.kane.practice.program.logicexecutor.core.domain.param.Param;
 import com.kane.practice.program.logicexecutor.meta.Meta;
+import java.util.List;
 
 public interface MetaData<T extends Meta> {
     T getMetaDef();
@@ -26,4 +27,10 @@ public interface MetaData<T extends Meta> {
      * @return 组装后的元数据
      */
     MetaData<T> not();
+
+    /**
+     *  获取所有的参数（包含子元素）
+     * @return
+     */
+    List<Param> getAllParm();
 }

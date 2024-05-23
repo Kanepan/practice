@@ -10,7 +10,7 @@ public class DefaultParam implements Param {
     /**
      * 参数值的来源类型
      */
-    protected Param.Type type;
+    protected Type type;
 
     public DefaultParam(
             String name,
@@ -19,6 +19,9 @@ public class DefaultParam implements Param {
         this.name = name;
         this.type = type;
         this.value = value;
+        if (Type.DEFINED.equals(type) && value == null) {
+            throw new IllegalArgumentException("已定义参数值不能为空");
+        }
     }
 
     public DefaultParam(
@@ -26,5 +29,8 @@ public class DefaultParam implements Param {
             Param.Type type) {
         this.name = name;
         this.type = type;
+        if (Type.DEFINED.equals(type) && value == null) {
+            throw new IllegalArgumentException("已定义参数值不能为空");
+        }
     }
 }

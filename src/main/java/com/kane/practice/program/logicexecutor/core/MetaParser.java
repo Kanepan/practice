@@ -9,7 +9,8 @@ import com.kane.practice.program.logicexecutor.core.domain.metadata.MetaData;
 import com.kane.practice.program.logicexecutor.core.domain.param.Param;
 import com.kane.practice.program.logicexecutor.meta.Meta;
 import com.kane.practice.program.logicexecutor.utils.MetaDataHandler;
-import com.kane.practice.program.logicexecutor.utils.ParameterValueHandler;
+import com.kane.practice.program.logicexecutor.utils.ParamHandler;
+
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -27,7 +28,7 @@ public class MetaParser {
         protected Gson initialValue() {
             return new GsonBuilder()
                     .registerTypeAdapter(MetaData.class, new MetaDataHandler())
-                    .registerTypeAdapter(Param.class, new ParameterValueHandler())
+                    .registerTypeAdapter(Param.class, new ParamHandler())
 //                    .registerTypeAdapter(MarketingTool.class, new MarketingToolHandler())
 //                    .registerTypeAdapter(MarketingActivity.class, new MarketingActivityHandler())
 //                    .registerTypeAdapter(MarketingDetail.class, new MarketingDetailHandler())
@@ -68,6 +69,9 @@ public class MetaParser {
         return defaultValue;
     }
 
+    public static Param[] parseToParameterValueArray(String jsonParameterValues) {
+        return localGson.get().fromJson(jsonParameterValues, Param[].class);
+    }
 
 }
 

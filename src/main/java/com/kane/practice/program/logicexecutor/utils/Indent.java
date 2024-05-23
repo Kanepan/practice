@@ -4,11 +4,7 @@ import java.io.IOException;
 import java.nio.CharBuffer;
 import java.util.Arrays;
 
-/**
- * 输出缩进空白的助手类，一个缩进为两个半角空格字符
- *
- * @author jifeng
- */
+
 public class Indent {
 
     /**

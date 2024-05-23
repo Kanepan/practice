@@ -5,14 +5,43 @@ import com.kane.practice.program.logicexecutor.core.context.LogicContext;
 import com.kane.practice.program.logicexecutor.core.domain.metadata.*;
 import com.kane.practice.program.logicexecutor.core.domain.param.Param;
 import com.kane.practice.program.logicexecutor.meta.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 public class MetaExecutor {
 
-    public boolean excute(MetaData<Meta> metaData, LogicContext context) {
+    public boolean doExecute(MetaData<Meta> metaData, LogicContext context) {
+        try {
+            doSetParams(metaData, context);
+        } catch (Exception e) {
+            log.error("set params error", e);
+            return false;
+        }
+
+        try {
+            return excute(metaData, context);
+        } catch (Exception e) {
+            log.error("execute error", e);
+        }
+        return false;
+    }
+
+    private void doSetParams(MetaData<Meta> metaData, LogicContext context) {
+        List<Param> params = metaData.getAllParm();
+        if (params != null) {
+            for (Param param : params) {
+                if (Param.Type.DEFINED.equals(param.getType())) {
+                    context.putParam(param.getName(), param.getValue());
+                }
+            }
+        }
+    }
+
+    private boolean excute(MetaData<Meta> metaData, LogicContext context) {
         if (metaData instanceof AndMetaData) {
             List<MetaData> childs = ((AndMetaData) metaData).getChildMetaDatas();
             for (MetaData child : childs) {
@@ -30,7 +59,6 @@ public class MetaExecutor {
                     return true;
                 }
             }
-
             return false;
         } else if (metaData instanceof NotMetaData) {
             // Not: 取反

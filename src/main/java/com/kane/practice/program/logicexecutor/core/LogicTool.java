@@ -26,9 +26,49 @@ public class LogicTool {
     }
 
     public static void main(String[] args) {
+        rule1();
+        //分割线
+        System.out.println("=====================================");
         rule2();
+        System.out.println("=====================================");
+        rule3();
     }
 
+    private static void rule3() {
+        OverAmountCondition overAmountCondition = new OverAmountCondition();
+        Param[] pp = new Param[]{
+                new DefaultParam("OrderAmountResource", Param.Type.RESOURCE),
+                new DefaultParam("overAmount", Param.Type.DEFINED, new BigDecimal(1000))
+        };
+        MetaData<Meta> metaDataCondtion = new SingleMetaData<>(overAmountCondition, pp);
+
+        DiscountAction discountAction = new DiscountAction();
+        Param[] pp3 = new Param[]{
+                new DefaultParam("OrderAmountResource", Param.Type.RESOURCE),
+                new DefaultParam("discountRate", Param.Type.SETTING)
+        };
+        MetaData<Meta> metaDataAction = new SingleMetaData<>(discountAction, pp3);
+
+        PairMetaData<Meta> pairMetaData = new PairMetaData<>(metaDataCondtion, metaDataAction);
+
+        String json = MetaParser.toJsonString(pairMetaData);
+        System.out.println("json: " + json);
+
+        // load pairMetaData
+        MetaData<Meta> metaData = MetaParser.fromJson(json);
+
+        MetaExecutor metaExecutor = new MetaExecutor();
+        LogicContext context = new LogicContext();
+
+
+        context.putParam("discountRate", "0.8");
+
+        context.setAmount(new BigDecimal(1000));
+        context.setOrderSum(5);
+
+        boolean result = metaExecutor.doExecute(metaData, context);
+        System.out.println("最终结果" + result);
+    }
 
     private static void rule2() {
         OverAmountCondition overAmountCondition = new OverAmountCondition();
@@ -93,7 +133,7 @@ public class LogicTool {
         context.setAmount(new BigDecimal(300));
         context.setOrderSum(5);
 
-        boolean result = metaExecutor.excute(metaData, context);
+        boolean result = metaExecutor.doExecute(metaData, context);
         System.out.println("最终结果" + result);
     }
 
@@ -161,7 +201,7 @@ public class LogicTool {
         context.setAmount(new BigDecimal(100));
         context.setOrderSum(5);
 
-        boolean result = metaExecutor.excute(metaData, context);
+        boolean result = metaExecutor.doExecute(metaData, context);
         System.out.println("最终结果" + result);
     }
 

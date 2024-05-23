@@ -17,7 +17,7 @@ import java.util.List;
 public class MetaDataHandler implements JsonSerializer<MetaData>, JsonDeserializer<MetaData> {
 
     private static final String FIELD_TYPE = "type";
-    private static final String FIELD_ELEMENTS = "elements";
+    private static final String FIELD_ELEMENTS = "childs";
     private static final String FIELD_META_ID = "metaId";
     private static final String FIELD_PARAMS = "params";
 //    private static final String FIELD_TRADE_STATUS = "tradeStatus";
