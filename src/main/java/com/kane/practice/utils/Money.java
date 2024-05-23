@@ -6,9 +6,11 @@ import java.text.DecimalFormat;
 
 public class Money {
     private BigDecimal amount;
+    private long cent;
 
     public Money(BigDecimal amount) {
         this.amount = amount.setScale(2, RoundingMode.HALF_EVEN);
+        this.cent = amount.multiply(new BigDecimal("100")).longValue();
     }
 
     public Money add(Money other) {
@@ -31,6 +33,11 @@ public class Money {
         return new Money(result);
     }
 
+    public int hashCode() {
+        return (int) (this.cent ^ (this.cent >>> 32));
+    }
+
+
     public BigDecimal getAmount() {
         return amount;
     }
@@ -40,6 +47,11 @@ public class Money {
         DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
         return decimalFormat.format(amount);
     }
+
+    public boolean equals(Money other) {
+        return (this.cent == other.cent);
+    }
+
 
     // 示例用法
     public static void main(String[] args) {
@@ -55,5 +67,13 @@ public class Money {
         System.out.println("Difference: " + difference);
         System.out.println("Product: " + product);
         System.out.println("Quotient: " + quotient);
+
+        System.out.println("____________________________");
+        System.out.println(new BigDecimal("10.5").equals(new BigDecimal("10.50")));
+        //compare Money
+        Money money3 = new Money(new BigDecimal("10.50"));
+        Money money4 = new Money(new BigDecimal("10.50"));
+        System.out.println(money3.equals(money4));//true
+
     }
 }
