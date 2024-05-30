@@ -9,12 +9,12 @@ import java.util.List;
 @Data
 public abstract class BaseMetaData<T extends Meta> implements MetaData<T> {
 
-    protected T metaDef;
+    protected T meta;
 
     protected Param[] params;
 
     public BaseMetaData(T def, Param[] params) {
-        this.metaDef = def;
+        this.meta = def;
         this.params = params;
     }
 
@@ -26,8 +26,8 @@ public abstract class BaseMetaData<T extends Meta> implements MetaData<T> {
         this.params = params;
     }
 
-    public T getMetaDef() {
-        return metaDef;
+    public T getMeta() {
+        return meta;
     }
 
 
@@ -82,12 +82,12 @@ public abstract class BaseMetaData<T extends Meta> implements MetaData<T> {
     private void checkMetaIsogeny(MetaData<T> other) {
         if (other instanceof SingleMetaData) {
             if (this instanceof SingleMetaData) {
-                if (!this.getMetaDef().getClass().getSuperclass().equals((other).getMetaDef().getClass().getSuperclass())) {
+                if (!this.getMeta().getClass().getSuperclass().equals((other).getMeta().getClass().getSuperclass())) {
                     throw new IllegalArgumentException("不支持相同类型的元数据进行或，与操作");
                 }
             } else if (this instanceof MultiMetaData && other instanceof SingleMetaData) {
                 for (MetaData<T> metaData : ((MultiMetaData<T>) this).getChildMetaDatas()) {
-                    if (metaData.getMetaDef().getClass().getSuperclass().equals(other.getMetaDef().getClass().getSuperclass())) {
+                    if (metaData.getMeta().getClass().getSuperclass().equals(other.getMeta().getClass().getSuperclass())) {
                         throw new IllegalArgumentException("不支持相同类型的元数据进行或，与操作");
                     }
                 }

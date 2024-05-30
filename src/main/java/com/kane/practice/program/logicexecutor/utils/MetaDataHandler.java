@@ -56,7 +56,7 @@ public class MetaDataHandler implements JsonSerializer<MetaData>, JsonDeserializ
             case RESOURCE:
 //                jsonMetaData.addProperty(FIELD_META_ID, src.getMetaDef().getMetaName());
                 jsonMetaData.add(FIELD_PARAMS, context.serialize(src.getParams()));
-                jsonMetaData.addProperty(FIELD_META_NAME, src.getMetaDef().getClass().getSimpleName());
+                jsonMetaData.addProperty(FIELD_META_NAME, src.getMeta().getClass().getSimpleName());
 
 //                if (src.getTradeStatus() != null) {
 //                    jsonMetaData.addProperty(FIELD_TRADE_STATUS, src.getTradeStatus());

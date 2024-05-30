@@ -5,7 +5,7 @@ import com.kane.practice.program.logicexecutor.meta.Meta;
 import java.util.List;
 
 public interface MetaData<T extends Meta> {
-    T getMetaDef();
+    T getMeta();
 
     Param[] getParams();
 
