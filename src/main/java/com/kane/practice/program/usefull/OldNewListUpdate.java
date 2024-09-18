@@ -1,7 +1,11 @@
 package com.kane.practice.program.usefull;
 
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 public class OldNewListUpdate {
     public static List<Attachment> updateAttachmentList(List<Attachment> newDataList, List<Attachment> oldDataList) {
@@ -120,8 +124,13 @@ public class OldNewListUpdate {
 
         // 调用更新函数
 //        List<Attachment> updatedDataList = updateAttachmentList(newDataList, oldDataList);
+//        List<Attachment> updatedDataList = updateAttachmentListGood2(newDataList, oldDataList);
 
-        List<Attachment> updatedDataList = updateAttachmentListGood2(newDataList, oldDataList);
+
+        List<Attachment> updatedDataList = dealOldData(newDataList, oldDataList,
+                Attachment::getId,
+                (oldData, newData) -> newData.setId(oldData.getId()),
+                Attachment::setStatus);
 
 
         // 打印结果
@@ -131,6 +140,7 @@ public class OldNewListUpdate {
     }
 
 
+    @Data
     static class Attachment {
         int id;
         String name;
@@ -141,6 +151,34 @@ public class OldNewListUpdate {
             this.name = name;
             this.status = status;
         }
+    }
+
+
+    public static <T> List<T> dealOldData(List<T> newList, List<T> oldList, Function<T, Object> idGetter, BiConsumer<T, T> updater, BiConsumer<T, String> statusUpdater) {
+        List<T> result = new ArrayList<>();
+        oldList.forEach(oldData -> {
+            // 查找匹配的新数据
+            T newData = newList.stream()
+                    .filter(data -> idGetter.apply(data).equals(idGetter.apply(oldData)))
+                    .findFirst()
+                    .orElse(null);
+
+            // 如果找到匹配的新数据，更新旧数据
+            if (newData != null) {
+                updater.accept(oldData, newData);
+                result.add(oldData);
+            } else {
+                // 如果未找到匹配的新数据，标记为失效
+                statusUpdater.accept(oldData, "失效");
+                result.add(oldData);
+            }
+        });
+
+        // 将新数据列表中不存在的数据添加到旧数据列表中
+        newList.stream()
+                .filter(newData -> oldList.stream().noneMatch(oldData -> idGetter.apply(newData).equals(idGetter.apply(oldData))))
+                .forEach(result::add);
+        return result;
     }
 
 }
