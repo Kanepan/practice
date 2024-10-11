@@ -11,13 +11,16 @@ import java.util.List;
 public class EvenMoney {
 
     public static void main(String[] args) {
+        //满足
         evenMoney(7, new BigDecimal("100"));
     }
+
 
     //四舍五入+多轮平均
     //第一个 100/3=33.33
     //第二个(100-33.33)/2=33.34
     //第三个(100-33.33-33.34)/1=33.33
+    // 不超过100， 并且应分，尽分
     private static void evenMoney(int numberOfParts, BigDecimal totalAmount) {
         List<BigDecimal> parts = new ArrayList<>();
         BigDecimal remainingAmount = totalAmount;
