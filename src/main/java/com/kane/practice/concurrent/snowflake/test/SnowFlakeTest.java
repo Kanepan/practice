@@ -1,11 +1,12 @@
 package com.kane.practice.concurrent.snowflake.test;
 
+import com.kane.practice.concurrent.snowflake.DefaultUidGenerator;
 import com.kane.practice.concurrent.snowflake.ShortUidGenerator;
 
 public class SnowFlakeTest {
-//    private static final DefaultUidGenerator uidGenerator = new DefaultUidGenerator();
+    private static final DefaultUidGenerator uidGenerator = new DefaultUidGenerator();
 
-    private static final ShortUidGenerator uidGenerator = new ShortUidGenerator();
+//    private static final ShortUidGenerator uidGenerator = new ShortUidGenerator();
 
     static {
         try {

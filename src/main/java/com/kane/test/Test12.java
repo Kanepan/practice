@@ -18,5 +18,8 @@ public class Test12 {
 
         String[] split = str.split("-");
         System.out.println(split[0]);
+
+        BigDecimal amount = new BigDecimal("0.02").multiply(new BigDecimal("100"));
+        System.out.println(amount.longValue());
     }
 }
