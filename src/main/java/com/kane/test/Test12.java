@@ -13,13 +13,16 @@ public class Test12 {
 //        System.out.println(amount.equals(new BigDecimal("0.00")));
 //        System.out.println(amount.equals(new BigDecimal("0")));
 //        System.out.println(amount.compareTo(BigDecimal.ZERO));
+//
+//        String str = "as阿斯蒂芬-应分:\\\" + shouldDivisionAmount + \\\"元-实分\\\" + amount + \\\"元\"";
+//
+//        String[] split = str.split("-");
+//        System.out.println(split[0]);
+//
+//        BigDecimal amount = new BigDecimal("0.02").multiply(new BigDecimal("100"));
+//        System.out.println(amount.longValue());
 
-        String str = "as阿斯蒂芬-应分:\\\" + shouldDivisionAmount + \\\"元-实分\\\" + amount + \\\"元\"";
+        System.out.println(new BigDecimal("0.00").compareTo(BigDecimal.ZERO) <=0);
 
-        String[] split = str.split("-");
-        System.out.println(split[0]);
-
-        BigDecimal amount = new BigDecimal("0.02").multiply(new BigDecimal("100"));
-        System.out.println(amount.longValue());
     }
 }
