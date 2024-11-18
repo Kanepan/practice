@@ -18,6 +18,13 @@ public class CycleTaskScheduler {
         if (now == null) {
             now = new Date();
         }
+
+        // 判断配置是否结束
+        if (config.getEndDate().before(now)) {
+            System.out.println("周期配置已结束，停止生成周期明细");
+            return;
+        }
+
         String cycleKey = null;
 
         // 根据周期类型生成周期标识
