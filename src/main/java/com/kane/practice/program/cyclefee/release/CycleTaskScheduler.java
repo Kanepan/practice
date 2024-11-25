@@ -28,15 +28,12 @@ public class CycleTaskScheduler {
         }
 
         // 生成周期明细
-        if (config.getCurrentCycle() == null) {
-            config.setCurrentCycle(cycleKey);
-            config.initCurrentCycleNUm();
-        } else {
+        if (config.getCurrentCycle() != null) {
             config.updateCurrentCycleStartDate();
             cycleKey = config.genCycleKey();
-            config.setCurrentCycle(cycleKey);
-            config.increaseCycleNum();
         }
+        config.setCurrentCycle(cycleKey);
+        config.increaseCycleNum();
 
         System.out.println("生成周期明细: " + cycleKey + ", 金额: " + config.getAmount());
 
@@ -53,7 +50,7 @@ public class CycleTaskScheduler {
     public static void main(String[] args) {
 //        testMonth(true);
 //        testYear(false);
-        testWeek(false);
+        testWeek(true);
 //        testDay();
 
     }
@@ -118,7 +115,7 @@ public class CycleTaskScheduler {
 
         // 模拟定时任务每日运行
 
-        for (int i = 0; i < 8; i++) { // 模拟10天运行
+        for (int i = 0; i < 7; i++) { // 模拟10天运行
 //            System.out.println("模拟日期: " + new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
             generateCycleDetail(config, calendar.getTime());
             // 模拟日期变化（每天+1天）

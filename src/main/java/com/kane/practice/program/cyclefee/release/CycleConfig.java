@@ -21,10 +21,6 @@ public class CycleConfig {
     private boolean naturalCycle; // 是否自然周期
     private boolean payNextCycle;
 
-    public void initCurrentCycleNUm() {
-        this.currentCycleNum = 1;
-    }
-
     public boolean isNowInCycle(Date now) {
         if (now == null) {
             now = new Date();
@@ -100,6 +96,11 @@ public class CycleConfig {
     }
 
     public Integer increaseCycleNum() {
-        return ++currentCycleNum;
+        if (currentCycleNum == null || currentCycleNum == 0) {
+            currentCycleNum = 1;
+            return currentCycleNum;
+        }
+        currentCycleNum = currentCycleNum + 1;
+        return currentCycleNum;
     }
 }
