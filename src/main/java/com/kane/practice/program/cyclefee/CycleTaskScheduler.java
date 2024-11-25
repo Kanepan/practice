@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+
+
 public class CycleTaskScheduler {
 
     private static Set<String> generatedCycles = new HashSet<>(); // 存储已生成的周期标识
@@ -75,13 +77,13 @@ public class CycleTaskScheduler {
         // 初始化配置
         CycleConfig config = new CycleConfig();
         config.setAmount(new BigDecimal("500.00"));
-        config.setCycleType("WEEK"); // 支持 YEAR / MONTH / WEEK / DAY
+        config.setCycleType("YEAR"); // 支持 YEAR / MONTH / WEEK / DAY
         config.setStartDate(new Date());
         config.setEndDate(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 365 * 5)); // 1年后
 
         // 模拟定时任务每日运行
         Calendar calendar = Calendar.getInstance();
-        for (int i = 0; i < 15; i++) { // 模拟10天运行
+        for (int i = 0; i < 388; i++) { // 模拟10天运行
 //            System.out.println("模拟日期: " + new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
             generateCycleDetail(config, calendar.getTime());
 
