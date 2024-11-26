@@ -30,6 +30,8 @@ public class CycleConfig {
 
     public String genCycleKey(Date now) {
         Date start = calCurrentCycleStartDate(now);
+        setCurrentCycleStartDate(start);
+
         Date end = calCurrentCycleEndDate(start);
         String startStr = DateUtil.formatDate(start);
         String endStr = DateUtil.formatDate(end);
@@ -82,7 +84,7 @@ public class CycleConfig {
     }
 
 
-    public Date calCurrentCycleStartDate(Date now) {
+    public Date calCurrentCycleStartDate(Date date) {
         if (currentCycleStartDate != null) {
             return currentCycleStartDate;
         }
@@ -91,28 +93,22 @@ public class CycleConfig {
         if (naturalCycle) {
             // 自然周期的起点
             if (cycleType == CycleTypeEnum.DAY) {
-                firstCycleStart = DateUtil.beginOfDay(startDate);
+                firstCycleStart = DateUtil.beginOfDay(date);
             } else if (cycleType == CycleTypeEnum.WEEK) {
-                firstCycleStart = DateUtil.beginOfWeek(startDate);
+                firstCycleStart = DateUtil.beginOfWeek(date);
             } else if (cycleType == CycleTypeEnum.MONTH) {
-                firstCycleStart = DateUtil.beginOfMonth(startDate);
+                firstCycleStart = DateUtil.beginOfMonth(date);
             } else if (cycleType == CycleTypeEnum.YEAR) {
-                firstCycleStart = DateUtil.beginOfYear(startDate);
+                firstCycleStart = DateUtil.beginOfYear(date);
             } else {
                 throw new RuntimeException("不支持的周期类型");
             }
         } else {
             // 非自然周期的起点
-            firstCycleStart = startDate;
+            firstCycleStart = DateUtil.beginOfDay(date);
         }
 
-//        // 如果当前时间已经在当前周期范围内，推迟到下一个周期
-//        while (!firstCycleStart.after(now)) {
-//            firstCycleStart = DateUtil.offset(firstCycleStart, cycleType.getUnit(), 1);
-//        }
-
-        this.currentCycleStartDate = firstCycleStart;
-        return currentCycleStartDate;
+        return firstCycleStart;
     }
 
     public Date updateCurrentCycleStartDate(Date now) {
@@ -120,33 +116,21 @@ public class CycleConfig {
         Date end = calCurrentCycleEndDate(start);
         this.currentCycleStartDate = DateUtil.offsetSecond(end, 1);
 
-        if (endDate != null && currentCycleStartDate.after(endDate)) {
-            return null;
-        }
+        while (end.before(now)) {
+            // 更新到下一个周期
+            start = calCurrentCycleStartDate(now);
+            end = calCurrentCycleEndDate(start);
+            this.currentCycleStartDate = DateUtil.offsetSecond(end, 1);
 
-        if (!isInCycle(now)) {
-            return updateCurrentCycleStartDate(now);
-        }
-
-        return currentCycleStartDate;
-    }
-
-
-    public Date updateCurrentCycleStartDate2(Date now) {
-        Date start = calCurrentCycleStartDate(now);
-        Date end = calCurrentCycleEndDate(start);
-        this.currentCycleStartDate = DateUtil.offsetSecond(end, 1);
-
-        if (endDate != null && currentCycleStartDate.after(endDate)) {
-            return null;
-        }
-
-        if (!isInCycle(now)) {
-            return updateCurrentCycleStartDate2(now);
+            // 如果已超出结束日期，停止更新并返回 null
+            if (endDate != null && start.after(endDate)) {
+                return null;
+            }
         }
 
         return currentCycleStartDate;
     }
+
 
     public Date calCurrentCycleEndDate(Date start) {
         Date end = null;
