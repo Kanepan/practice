@@ -1,4 +1,4 @@
-package com.kane.practice.program.cyclefee.release;
+package com.kane.practice.program.cyclefee.release2;
 
 import cn.hutool.core.date.DateField;
 import lombok.Getter;

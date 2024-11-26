@@ -1,4 +1,4 @@
-package com.kane.practice.program.cyclefee.release;
+package com.kane.practice.program.cyclefee.release2;
 
 import cn.hutool.core.date.DateUtil;
 
@@ -8,7 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class CycleTaskScheduler {
-    private static void generateCycleDetail(CycleConfig config, Date now) {
+    private static void generateCycleDetailBak(CycleConfig config, Date now) {
         if (config.getStartDate().after(now)) {
             System.out.println("周期配置未开始，停止生成周期明细");
             return;
@@ -43,10 +43,48 @@ public class CycleTaskScheduler {
         System.out.println("生成周期明细: " + cycleKey + ", 金额: " + config.getAmount());
     }
 
+    private static void generateCycleDetail(CycleConfig config, Date now) {
+        if (config.getStartDate().after(now)) {
+            System.out.println("周期配置未开始，停止生成周期明细");
+            return;
+        }
+        if (config.getEndDate().before(now)) {
+            System.out.println("周期配置已结束，停止生成周期明细");
+            return;
+        }
 
+        // 计算当前周期开始和结束日期
+        Date currentStart = config.calCurrentCycleStartDate(now);
+        Date currentEnd = config.calCurrentCycleEndDate(currentStart);
+
+
+        if (config.isPayNextCycle()) {
+            config.updateCurrentCycleStartDate2(now);
+        }
+
+        // 如果启用 payNextCycle 并当前时间在当前周期内，则跳过当前周期，直接生成下一周期
+        if ( now.before(currentEnd)) {
+            currentStart = DateUtil.offsetSecond(currentEnd, 1); // 下一周期的起点
+            if (currentStart.after(config.getEndDate())) {
+                System.out.println("周期配置已结束，停止生成周期明细");
+                return;
+            }
+        } else if (!config.isPayNextCycle() && config.isInCycle(now)) {
+            // 如果未启用 payNextCycle 并当前时间在当前周期内，跳过生成
+            System.out.println("当前周期已生成明细，跳过");
+            return;
+        }
+
+        // 生成周期明细
+        String cycleKey = config.genCycleKey(currentStart);
+        config.setCurrentCycle(cycleKey);
+        config.increaseCycleNum();
+
+        System.out.println("生成周期明细: " + cycleKey + ", 金额: " + config.getAmount());
+    }
 
     public static void main(String[] args) {
-        testMonth(true);
+        testMonth(false);
 //        testYear(false);
 //        testWeek(false);
 //        testDay();
@@ -66,11 +104,11 @@ public class CycleTaskScheduler {
 
         // 模拟定时任务每日运行
         Calendar calendar = Calendar.getInstance();
-        for (int i = 0; i < 26; i++) { // 模拟10天运行
+        for (int i = 0; i < 1; i++) { // 模拟10天运行
             System.out.println("模拟日期: " + new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
             generateCycleDetail(config, calendar.getTime());
             // 模拟日期变化（每天+1天）
-            calendar.add(Calendar.DATE, 1);
+            calendar.add(Calendar.DATE, 10);
         }
 //        System.out.println("已生成周期数: " + generatedCycles.size());
     }

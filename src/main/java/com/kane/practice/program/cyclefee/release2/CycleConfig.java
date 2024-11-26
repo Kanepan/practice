@@ -1,4 +1,4 @@
-package com.kane.practice.program.cyclefee.release;
+package com.kane.practice.program.cyclefee.release2;
 
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateUtil;
@@ -51,30 +51,69 @@ public class CycleConfig {
 //    }
 
 
-    public Date calCurrentCycleStartDate(Date now) {
+    public Date calCurrentCycleStartDateBak(Date now) {
         if (currentCycleStartDate != null) {
             return currentCycleStartDate;
         }
+
+        Date date = startDate;
+        if (DateUtil.beginOfDay(startDate).before(DateUtil.beginOfDay(now))) {
+            date = now;
+        }
+
         if (naturalCycle) {
             //自然周期
             if (cycleType == CycleTypeEnum.DAY) {
-                this.currentCycleStartDate = DateUtil.beginOfDay(now);
+                this.currentCycleStartDate = DateUtil.beginOfDay(date);
             } else if (cycleType == CycleTypeEnum.WEEK) {
-                this.currentCycleStartDate = DateUtil.beginOfWeek(now);
+                this.currentCycleStartDate = DateUtil.beginOfWeek(date);
             } else if (cycleType == CycleTypeEnum.MONTH) {
-                this.currentCycleStartDate = DateUtil.beginOfMonth(now);
+                this.currentCycleStartDate = DateUtil.beginOfMonth(date);
             } else if (cycleType == CycleTypeEnum.YEAR) {
-                this.currentCycleStartDate = DateUtil.beginOfYear(now);
+                this.currentCycleStartDate = DateUtil.beginOfYear(date);
             } else {
                 throw new RuntimeException("不支持的周期类型");
             }
         } else {
             //非自然周期
-            this.currentCycleStartDate = DateUtil.beginOfDay(now);
+            this.currentCycleStartDate = DateUtil.beginOfDay(date);
         }
         return currentCycleStartDate;
     }
 
+
+    public Date calCurrentCycleStartDate(Date now) {
+        if (currentCycleStartDate != null) {
+            return currentCycleStartDate;
+        }
+
+        Date firstCycleStart;
+        if (naturalCycle) {
+            // 自然周期的起点
+            if (cycleType == CycleTypeEnum.DAY) {
+                firstCycleStart = DateUtil.beginOfDay(startDate);
+            } else if (cycleType == CycleTypeEnum.WEEK) {
+                firstCycleStart = DateUtil.beginOfWeek(startDate);
+            } else if (cycleType == CycleTypeEnum.MONTH) {
+                firstCycleStart = DateUtil.beginOfMonth(startDate);
+            } else if (cycleType == CycleTypeEnum.YEAR) {
+                firstCycleStart = DateUtil.beginOfYear(startDate);
+            } else {
+                throw new RuntimeException("不支持的周期类型");
+            }
+        } else {
+            // 非自然周期的起点
+            firstCycleStart = startDate;
+        }
+
+//        // 如果当前时间已经在当前周期范围内，推迟到下一个周期
+//        while (!firstCycleStart.after(now)) {
+//            firstCycleStart = DateUtil.offset(firstCycleStart, cycleType.getUnit(), 1);
+//        }
+
+        this.currentCycleStartDate = firstCycleStart;
+        return currentCycleStartDate;
+    }
 
     public Date updateCurrentCycleStartDate(Date now) {
         Date start = calCurrentCycleStartDate(now);
