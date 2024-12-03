@@ -53,37 +53,6 @@ public class CycleConfig {
 //    }
 
 
-    public Date calCurrentCycleStartDateBak(Date now) {
-        if (currentCycleStartDate != null) {
-            return currentCycleStartDate;
-        }
-
-        Date date = startDate;
-        if (DateUtil.beginOfDay(startDate).before(DateUtil.beginOfDay(now))) {
-            date = now;
-        }
-
-        if (naturalCycle) {
-            //自然周期
-            if (cycleType == CycleTypeEnum.DAY) {
-                this.currentCycleStartDate = DateUtil.beginOfDay(date);
-            } else if (cycleType == CycleTypeEnum.WEEK) {
-                this.currentCycleStartDate = DateUtil.beginOfWeek(date);
-            } else if (cycleType == CycleTypeEnum.MONTH) {
-                this.currentCycleStartDate = DateUtil.beginOfMonth(date);
-            } else if (cycleType == CycleTypeEnum.YEAR) {
-                this.currentCycleStartDate = DateUtil.beginOfYear(date);
-            } else {
-                throw new RuntimeException("不支持的周期类型");
-            }
-        } else {
-            //非自然周期
-            this.currentCycleStartDate = DateUtil.beginOfDay(date);
-        }
-        return currentCycleStartDate;
-    }
-
-
     public Date calCurrentCycleStartDate(Date date) {
         if (currentCycleStartDate != null) {
             return currentCycleStartDate;
