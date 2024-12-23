@@ -4,6 +4,8 @@ import cn.hutool.core.util.NumberUtil;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Calendar;
+import java.util.Date;
 
 public class Test12 {
 
@@ -24,5 +26,22 @@ public class Test12 {
 
         System.out.println(new BigDecimal("0.00").compareTo(BigDecimal.ZERO) <=0);
 
+        Date date = new Date();
+        System.out.println(date);
+        System.out.println(convertDate2(date));
+    }
+
+    private static Date convertDate(Date date) {
+        return new Date(date.getTime() - date.getTime() % (24 * 60 * 60 * 1000));
+    }
+
+    private static Date convertDate2(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
     }
 }

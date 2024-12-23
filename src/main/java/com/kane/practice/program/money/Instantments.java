@@ -64,7 +64,7 @@ public class Instantments {
         System.out.println("=====================================");
 
         for (int i = 0; i < periodNum; i++) {
-            System.out.println("第 " + (i + 1) + " 期还款金额: " + calculateItemAmout(totalAmount, i, 2, periodNum));
+            System.out.println("第 " + (i + 1) + " 期还款金额: " + calculateItemAmout(totalAmount, i, 1, periodNum));
         }
     }
 

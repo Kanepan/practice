@@ -21,18 +21,20 @@ public class CycleUtils {
         calendar.setFirstDayOfWeek(Calendar.MONDAY); // 设置周一为一周的第一天
         calendar.setTime(date);
 
-        int year = calendar.get(Calendar.YEAR);
-        int week = calendar.get(Calendar.WEEK_OF_YEAR);
-
-        // 修正跨年问题
-        if (week == 1 && calendar.get(Calendar.MONTH) == Calendar.DECEMBER) {
-            year += 1;
-        }
-        if (calendar.get(Calendar.MONTH) == Calendar.JANUARY && week >= 52) {
-            year -= 1;
-        }
-
-        return String.format("%d-%02d", year, week);
+//        int year = calendar.get(Calendar.YEAR);
+//        int week = calendar.get(Calendar.WEEK_OF_YEAR);
+//
+//        // 修正跨年问题
+//        if (week == 1 && calendar.get(Calendar.MONTH) == Calendar.DECEMBER) {
+//            year += 1;
+//        }
+//        if (calendar.get(Calendar.MONTH) == Calendar.JANUARY && week >= 52) {
+//            year -= 1;
+//        }
+//
+//        return String.format("%d-%02d", year, week);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-WW");
+        return sdf.format(date);
     }
 
     /**

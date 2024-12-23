@@ -20,7 +20,7 @@ public class ToMapTest {
         );
         //在 id 重复的情况下，保留新的值, 不会抛出异常Duplicate key 王五
         Map<Integer, Employee> collect = employeeList.stream()
-                .collect(Collectors.toMap(Employee::getId, Employee->Employee, (oldValue, newValue) -> newValue));
+                .collect(Collectors.toMap(Employee::getId, Function.identity(), (oldValue, newValue) -> newValue));
         System.out.println(collect);
 
         //在 id 重复的情况下，保留新的值, 不会抛出异常Duplicate key 王五
