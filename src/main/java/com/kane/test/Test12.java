@@ -1,5 +1,7 @@
 package com.kane.test;
 
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
 
 import java.math.BigDecimal;
@@ -29,6 +31,23 @@ public class Test12 {
         Date date = new Date();
         System.out.println(date);
         System.out.println(convertDate2(date));
+
+
+        String startTime  = "2025-01-21 11:00:00";
+        String endTime = "2025-01-19 10:00:00";
+
+        // 解析字符串为日期对象
+        Date startDate = DateUtil.parse(startTime);
+        Date endDate = DateUtil.parse(endTime);
+        endDate =  DateUtil.endOfDay(endDate);
+
+        // 按毫秒计算差值，结果可为正或负
+        long diffInMs = endDate.getTime() - startDate.getTime();
+
+        // 转换为天，保留正负值
+        long diffInDays = diffInMs / DateUnit.DAY.getMillis();
+
+        System.out.println("两个时间相差的天数: " + diffInDays);
     }
 
     private static Date convertDate(Date date) {
