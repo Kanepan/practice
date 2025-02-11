@@ -1,5 +1,7 @@
 package com.kane.practice.newfeature.lambda;
 
+import lombok.Data;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -12,6 +14,14 @@ class Transaction {
         this.category = category;
         this.amount = amount;
         this.tax = tax;
+    }
+
+    public String groupByCategoryAndTax() {
+        return category + tax;
+    }
+
+    public String groupByCategory() {
+        return category ;
     }
 
     public String getCategory() {
@@ -27,22 +37,13 @@ class Transaction {
     }
 }
 
+@Data
 class Summary {
     int totalAmount;
     int totalTax;
+    String category;
 
-    public Summary(int totalAmount, int totalTax) {
-        this.totalAmount = totalAmount;
-        this.totalTax = totalTax;
-    }
 
-    @Override
-    public String toString() {
-        return "Summary{" +
-                "totalAmount=" + totalAmount +
-                ", totalTax=" + totalTax +
-                '}';
-    }
 }
 
 public class BeanSumNew {
@@ -51,23 +52,29 @@ public class BeanSumNew {
                 new Transaction("Food", 100, 10),
                 new Transaction("Food", 200, 20),
                 new Transaction("Transport", 50, 5),
-                new Transaction("Food", 150, 15),
+                new Transaction("Food", 150, 10),
                 new Transaction("Transport", 100, 10)
         );
 
         // 按照 category 分组并对 amount 和 tax 字段求和
         Map<String, Summary> sumByCategory = transactions.stream()
                 .collect(Collectors.groupingBy(
-                        Transaction::getCategory,
+                        Transaction::groupByCategoryAndTax,
                         Collectors.collectingAndThen(
                                 Collectors.toList(),
                                 list -> {
                                     int totalAmount = list.stream().mapToInt(Transaction::getAmount).sum();
                                     int totalTax = list.stream().mapToInt(Transaction::getTax).sum();
-                                    return new Summary(totalAmount, totalTax);
+                                    Summary summary =  new Summary();
+                                    summary.totalAmount = totalAmount;
+                                    summary.totalTax = totalTax;
+                                    summary.category = list.get(0).getCategory();
+                                    return summary;
                                 }
                         )
                 ));
+
+
 
         // 输出结果
         sumByCategory.forEach((category, summary) ->
