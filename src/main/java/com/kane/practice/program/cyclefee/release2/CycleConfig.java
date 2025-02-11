@@ -27,6 +27,13 @@ public class CycleConfig {
         return now.after(start) && now.before(end);
     }
 
+    public boolean isInOrBeforeCurrentCycle(Date now) {
+        Date start = calCurrentCycleStartDate(now);
+        Date end = calCurrentCycleEndDate(start);
+
+        return now.before(end);
+    }
+
 
     public String genCycleKey(Date now) {
         Date start = calCurrentCycleStartDate(now);

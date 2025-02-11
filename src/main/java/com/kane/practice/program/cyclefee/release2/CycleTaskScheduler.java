@@ -18,7 +18,7 @@ public class CycleTaskScheduler {
 
         String cycleKey = null;
         if (config.getCurrentCycle() != null) {
-            if (config.isInCycle(now)) {
+            if (config.isInOrBeforeCurrentCycle(now)) {
 //                System.out.println("当前周期已生成明细，跳过: " + cycleKey);
                 return;
             }
@@ -56,8 +56,8 @@ public class CycleTaskScheduler {
 
     public static void main(String[] args) {
 //        testMonth(true);
-//        testYear(true);
-        testWeek(false);
+        testYear(false);
+//        testWeek(false);
 //        testDay();
 
     }
@@ -92,7 +92,7 @@ public class CycleTaskScheduler {
         config.setCycleType(CycleTypeEnum.YEAR); // 支持 YEAR / MONTH / WEEK / DAY
         config.setStartDate(new Date());
         config.setEndDate(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 365 * 5)); // 5年后
-        config.setPayNextCycle(true);
+        config.setPayNextCycle(false);
         config.setNaturalCycle(natural);
 
         // 模拟定时任务每日运行
