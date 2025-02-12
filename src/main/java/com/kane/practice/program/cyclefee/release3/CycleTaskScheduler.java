@@ -1,4 +1,6 @@
-package com.kane.practice.program.cyclefee.release2;
+package com.kane.practice.program.cyclefee.release3;
+
+import cn.hutool.core.date.DateUtil;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -15,10 +17,16 @@ public class CycleTaskScheduler {
             System.out.println("周期配置已结束，停止生成周期明细");
             return;
         }
-
+        long calCyleNum = 0;
         String cycleKey = null;
         if (config.getCurrentCycle() != null) {
-            if (config.isInCycle(now)) {
+            if (config.isBeforeCurrentCycle(now)) {
+//                System.out.println("当前周期已生成明细，跳过: " + cycleKey);
+                return;
+            }
+
+            calCyleNum = config.calCycleNum(now);
+            if (calCyleNum <= config.getCurrentCycleNum().longValue()) {
 //                System.out.println("当前周期已生成明细，跳过: " + cycleKey);
                 return;
             }
@@ -29,6 +37,12 @@ public class CycleTaskScheduler {
                 return;
             }
             cycleKey = config.genCycleKey(now);
+
+            Date firstCycleStart = config.getCurrentCycleStartDate();
+            Date endCycleStart = config.calCurrentCycleEndDate(firstCycleStart);
+            if (!config.canGenCycle(now, endCycleStart)) {
+                return;
+            }
         } else {
             if (config.isPayNextCycle()) {
                 // 判断是不是相差一个周期如果不是 则不生成
@@ -44,21 +58,32 @@ public class CycleTaskScheduler {
             } else {
                 cycleKey = config.genCycleKey(now);
             }
+
+            Date firstCycleStart = config.getCurrentCycleStartDate();
+            Date endCycleStart = config.calCurrentCycleEndDate(firstCycleStart);
+            if (!config.canGenCycle(now, endCycleStart)) {
+                return;
+            }
+
+            calCyleNum = config.calCycleNum(now);
+
         }
 
 
         config.setCurrentCycle(cycleKey);
-        config.increaseCycleNum();
+        config.setCurrentCycleNum((int)calCyleNum);
+
         System.out.println("模拟日期: " + new SimpleDateFormat("yyyy-MM-dd").format(now));
         System.out.println("生成周期明细: " + cycleKey + ", 金额: " + config.getAmount() + ", 当前周期数: " + config.getCurrentCycleNum() + " 当前周几开始时间" + config.getCurrentCycleStartDate());
 
     }
 
     public static void main(String[] args) {
-//        testMonth(true);
-//        testYear(true);
-        testWeek(false);
-//        testDay();
+//        testMonth(false);
+//        testYear(false);
+//        testYear2(true);
+//        testWeek(true);
+        testDay();
 
     }
 
@@ -70,16 +95,16 @@ public class CycleTaskScheduler {
         config.setCycleType(CycleTypeEnum.MONTH); // 支持 YEAR / MONTH / WEEK / DAY
         config.setStartDate(new Date());
         config.setEndDate(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 365 * 5)); // 1年后
-        config.setPayNextCycle(true);
+        config.setPayNextCycle(false);
         config.setNaturalCycle(natural);
 
         // 模拟定时任务每日运行
         Calendar calendar = Calendar.getInstance();
-        for (int i = 0; i < 3; i++) { // 模拟10天运行
+        for (int i = 0; i < 100; i++) { // 模拟10天运行
             System.out.println("模拟日期: " + new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
             generateCycleDetail(config, calendar.getTime());
             // 模拟日期变化（每天+1天）
-            calendar.add(Calendar.DATE, 31);
+            calendar.add(Calendar.DATE, 1);
         }
 //        System.out.println("已生成周期数: " + generatedCycles.size());
     }
@@ -92,41 +117,86 @@ public class CycleTaskScheduler {
         config.setCycleType(CycleTypeEnum.YEAR); // 支持 YEAR / MONTH / WEEK / DAY
         config.setStartDate(new Date());
         config.setEndDate(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 365 * 5)); // 5年后
-        config.setPayNextCycle(true);
+        config.setPayNextCycle(false);
         config.setNaturalCycle(natural);
 
         // 模拟定时任务每日运行
         Calendar calendar = Calendar.getInstance();
-        for (int i = 0; i < 456; i++) { // 模拟10天运行
+        for (int i = 0; i < 3000; i++) { // 模拟10天运行
 //            System.out.println("模拟日期: " + new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
             generateCycleDetail(config, calendar.getTime());
             // 模拟日期变化（每天+1天）
             calendar.add(Calendar.DATE, 1);
         }
 
+        // 模拟日期变化（每天+1天）
+//        System.out.println("模拟日期: " + new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
+//        generateCycleDetail(config, calendar.getTime());
+//
+//        calendar.add(Calendar.DATE, 350);
+//        System.out.println("模拟日期: " + new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
+//        generateCycleDetail(config, calendar.getTime());
+//
+//        calendar.add(Calendar.DATE, 30);
+//        System.out.println("模拟日期: " + new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
+//        generateCycleDetail(config, calendar.getTime());
+//
+//        // 模拟日期变化（每天+1天）
+//        calendar.add(Calendar.DATE, 320);
+//        System.out.println("模拟日期: " + new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
+//        generateCycleDetail(config, calendar.getTime());
+//
+//        calendar.add(Calendar.DATE, 1);
+//        System.out.println("模拟日期: " + new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
+//        generateCycleDetail(config, calendar.getTime());
+
+
 //        System.out.println("已生成周期数: " + generatedCycles.size());
     }
 
-    private static Date calculateFeeEndDate(com.kane.practice.program.cyclefee.release3.CycleConfig config, Date cycleEnd) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(cycleEnd);
 
-        if (config.getCycleType() == com.kane.practice.program.cyclefee.release3.CycleTypeEnum.YEAR) {
-            cal.add(Calendar.MONTH, -1); // 倒数第二个月的最后一天
-            cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-        } else if (config.getCycleType() == com.kane.practice.program.cyclefee.release3.CycleTypeEnum.MONTH) {
-            cal.add(Calendar.DAY_OF_MONTH, -1); // 倒数第二天的最后一秒
-            cal.set(Calendar.HOUR_OF_DAY, 23);
-            cal.set(Calendar.MINUTE, 59);
-            cal.set(Calendar.SECOND, 59);
-        } else if (config.getCycleType() == com.kane.practice.program.cyclefee.release3.CycleTypeEnum.WEEK) {
-            cal.add(Calendar.DAY_OF_MONTH, -1); // 倒数第二天的最后一秒
-            cal.set(Calendar.HOUR_OF_DAY, 23);
-            cal.set(Calendar.MINUTE, 59);
-            cal.set(Calendar.SECOND, 59);
+    public static void testYear2(boolean natural) {
+        // 初始化配置
+        CycleConfig config = new CycleConfig();
+        config.setAmount(new BigDecimal("500.00"));
+        config.setCycleType(CycleTypeEnum.YEAR); // 支持 YEAR / MONTH / WEEK / DAY
+        config.setStartDate(new Date());
+        config.setEndDate(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 365 * 5)); // 5年后
+        config.setPayNextCycle(false);
+        config.setNaturalCycle(natural);
+
+        // 模拟定时任务每日运行
+        Calendar calendar = Calendar.getInstance();
+        for (int i = 0; i < 2000; i++) { // 模拟10天运行
+//            System.out.println("模拟日期: " + new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
+            generateCycleDetail(config, calendar.getTime());
+            // 模拟日期变化（每天+1天）
+            calendar.add(Calendar.DATE, 1);
         }
 
-        return cal.getTime();
+        // 模拟日期变化（每天+1天）
+//        System.out.println("模拟日期: " + new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
+//        generateCycleDetail(config, calendar.getTime());
+//
+//        calendar.add(Calendar.DATE, 290);
+//        System.out.println("模拟日期: " + new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
+//        generateCycleDetail(config, calendar.getTime());
+//
+//        calendar.add(Calendar.DATE, 30);
+//        System.out.println("模拟日期: " + new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
+//        generateCycleDetail(config, calendar.getTime());
+//
+//        // 模拟日期变化（每天+1天）
+//        calendar.add(Calendar.DATE, 310);
+//        System.out.println("模拟日期: " + new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
+//        generateCycleDetail(config, calendar.getTime());
+//
+//        calendar.add(Calendar.DATE, 1);
+//        System.out.println("模拟日期: " + new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
+//        generateCycleDetail(config, calendar.getTime());
+
+
+//        System.out.println("已生成周期数: " + generatedCycles.size());
     }
 
     public static void testWeek(boolean natural) {
@@ -146,11 +216,11 @@ public class CycleTaskScheduler {
 
 
         calendar.add(Calendar.DATE, 2);
-        for (int i = 0; i < 2; i++) { // 模拟10天运行
+        for (int i = 0; i < 15; i++) { // 模拟10天运行
 //            System.out.println("模拟日期: " + new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
             generateCycleDetail(config, calendar.getTime());
             // 模拟日期变化（每天+1天）
-            calendar.add(Calendar.DATE, 17);
+            calendar.add(Calendar.DATE, 1);
         }
 
 //        System.out.println("已生成周期数: " + generatedCycles.size());
@@ -169,11 +239,11 @@ public class CycleTaskScheduler {
 
         // 模拟定时任务每日运行
         Calendar calendar = Calendar.getInstance();
-        for (int i = 0; i < 2; i++) { // 模拟10天运行
+        for (int i = 0; i < 10; i++) { // 模拟10天运行
 //            System.out.println("模拟日期: " + new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
             generateCycleDetail(config, calendar.getTime());
             // 模拟日期变化（每天+1天）
-            calendar.add(Calendar.DATE, 10);
+            calendar.add(Calendar.DATE, 1);
         }
 
 //        System.out.println("已生成周期数: " + generatedCycles.size());
