@@ -38,9 +38,7 @@ public class CycleTaskScheduler {
             }
             cycleKey = config.genCycleKey(now);
 
-            Date firstCycleStart = config.getCurrentCycleStartDate();
-            Date endCycleStart = config.calCurrentCycleEndDate(firstCycleStart);
-            if (!config.canGenCycle(now, endCycleStart)) {
+            if (!config.canGenCycle(now)) {
                 return;
             }
         } else {
@@ -59,9 +57,7 @@ public class CycleTaskScheduler {
                 cycleKey = config.genCycleKey(now);
             }
 
-            Date firstCycleStart = config.getCurrentCycleStartDate();
-            Date endCycleStart = config.calCurrentCycleEndDate(firstCycleStart);
-            if (!config.canGenCycle(now, endCycleStart)) {
+            if (!config.canGenCycle(now)) {
                 return;
             }
 

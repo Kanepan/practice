@@ -180,7 +180,10 @@ public class CycleConfig {
     }
 
 
-    public boolean canGenCycle(Date now, Date cycleEnd) {
+    public boolean canGenCycle(Date now) {
+
+        Date cycleStart =getCurrentCycleStartDate();
+        Date cycleEnd = calCurrentCycleEndDate(cycleStart);
 
         Date genEndCycle = null;
         Date genStartCycle = null;
