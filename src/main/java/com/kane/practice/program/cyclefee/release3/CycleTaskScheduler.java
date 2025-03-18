@@ -75,11 +75,11 @@ public class CycleTaskScheduler {
     }
 
     public static void main(String[] args) {
-//        testMonth(false);
+        testMonth(false);
 //        testYear(false);
 //        testYear2(true);
 //        testWeek(true);
-        testDay();
+//        testDay();
 
     }
 
