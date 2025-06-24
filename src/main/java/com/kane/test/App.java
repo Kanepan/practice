@@ -1,3 +1,5 @@
+package com.kane.test;
+
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.Scanner;
