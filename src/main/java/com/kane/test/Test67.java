@@ -31,5 +31,13 @@ public class Test67 {
         payDeadline = DateUtil.endOfDay(payDeadline); // 设置为当天的23:59:59
 
         System.out.println("支付截止时间: " + payDeadline);
+
+
+        //SH250900492  截取SH2509后面的数字部分 00492 转换成数字 492 + 1
+
+        String maxBillNo = "SH250900492";
+        String subStr =  maxBillNo.substring(6);
+        int newBillNo = Integer.parseInt(subStr) + 1;
+        System.out.println("新的单据号: " + newBillNo);
     }
 }
