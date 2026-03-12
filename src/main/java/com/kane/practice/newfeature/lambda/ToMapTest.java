@@ -38,23 +38,23 @@ public class ToMapTest {
                 .reduce(0d, (a, b) -> a + b);
         System.out.println(d2);
         /**
-         * id作为Map的key,name作为value的集合
+         * id作为Map的key,name作为value的集合 ,key重复会报错
          * */
-        Map<Integer, String> collect1 = employeeList.stream()
-                .collect(Collectors.toMap(Employee::getId, Employee::getName));
+//        Map<Integer, String> collect1 = employeeList.stream()
+//                .collect(Collectors.toMap(Employee::getId, Employee::getName));
         //System.out.println(collect1);//{101=张三, 102=李四, 103=王五, 104=赵六}
 
         /**
          * id作为map的集合，Employee对象作为Map的value
          */
         Map<Integer, Employee> collect2 = employeeList.stream()
-                .collect(Collectors.toMap(Employee::getId, t -> t));
+                .collect(Collectors.toMap(Employee::getId, t -> t, (o,n)->n));
         System.out.println(collect2);//{101=Employee(id=101, name=张三, age=18, salary=9999.99), 102=Employee(id=102, name=李四, age=59, salary=6666.66), 103=Employee(id=103, name=王五, age=28, salary=3333.33), 104=Employee(id=104, name=赵六, age=8, salary=7777.77)}
         /**
          * id作为map的集合，Employee对象作为Map的value
          */
         Map<Integer, Employee> collect3 = employeeList.stream()
-                .collect(Collectors.toMap(Employee::getId, Function.identity()));
+                .collect(Collectors.toMap(Employee::getId, Function.identity(),(o,n)->n));
         System.out.println(collect3);//{101=Employee(id=101, name=张三, age=18, salary=9999.99), 102=Employee(id=102, name=李四, age=59, salary=6666.66), 103=Employee(id=103, name=王五, age=28, salary=3333.33), 104=Employee(id=104, name=赵六, age=8, salary=7777.77)}
 
         System.out.println("-----------------");//{101=Employee(id=101, name=张三, age=18, salary=9999.99), 102=Employee(id=102, name=李四, age=59, salary=6666.66), 103=Employee(id=103, name=王五, age=28, salary=3333.33), 104=Employee(id=104, name=赵六, age=8, salary=7777.77)}
