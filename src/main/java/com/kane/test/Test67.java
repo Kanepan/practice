@@ -4,7 +4,6 @@ import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateUtil;
 
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class Test67 {
@@ -32,18 +31,5 @@ public class Test67 {
         payDeadline = DateUtil.endOfDay(payDeadline); // 设置为当天的23:59:59
 
         System.out.println("支付截止时间: " + payDeadline);
-
-
-        String billingMonthlyDateStr = "2025-09";
-         billingMonthlyDateStr = billingMonthlyDateStr + "-01";
-        Date billingMonthlyDate = DateUtil.parseDate(billingMonthlyDateStr);
-        // 当月第一天
-
-        Date date = DateUtil.beginOfMonth(new Date());
-        if (billingMonthlyDate.before(date)) {
-            System.out.println("billingMonthlyDate 在 date 之前");
-        } else {
-            System.out.println("billingMonthlyDate 不在 date 之前");
-        }
     }
 }
